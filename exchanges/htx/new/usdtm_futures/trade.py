@@ -18,7 +18,7 @@ def place_order(api, data, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_params` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
