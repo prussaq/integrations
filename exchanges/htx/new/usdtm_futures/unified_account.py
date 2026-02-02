@@ -19,7 +19,7 @@ def query_unified_account_assets(api, params={}, *, headers={}, **kwargs):
         params (dict): 
             contract_code (str): Contract code; defaults to all.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
