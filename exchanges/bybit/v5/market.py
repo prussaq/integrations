@@ -25,7 +25,7 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
             end (int): The end timestamp (ms).
             limit (int): Limit for data size per page. [1, 1000]. Default: 200
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -79,7 +79,7 @@ def get_instruments_info(category, params={}, *, headers={}, **kwargs):
             limit (int): Limit for data size per page. [1, 1000]. Default: 500
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -129,7 +129,7 @@ def get_tickers(category, params={}, *, headers={}, **kwargs):
             baseCoin (str): Base coin, uppercase only. Apply to option only.
             expDate (str): Expiry date. e.g., 25DEC22. Apply to option only.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -180,7 +180,7 @@ def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwarg
             endTime (int): The end timestamp (ms).
             limit (int): Limit for data size per page. [1, 200]. Default: 200
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
