@@ -27,7 +27,7 @@ def get_position_info(api, category, params={}, *, headers={}, **kwargs):
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set.
         headers (dict): 
             X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -83,7 +83,7 @@ def set_leverage(api, category, symbol, *, buy, sell, headers={}, **kwargs):
         sell (str): Sell leverage.
         headers (dict): 
             X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -135,7 +135,7 @@ def set_trading_stop(api, data, *, headers={}, **kwargs):
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         headers (dict): 
             X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -195,7 +195,7 @@ def get_closed_PnL(api, category, params={}, *, headers={}, **kwargs):
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set.
         headers (dict): 
             X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
