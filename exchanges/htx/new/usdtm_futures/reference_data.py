@@ -17,7 +17,7 @@ def query_funding_rate(contract_code, *, headers={}, **kwargs):
     Args:
         contract_code (str): Contract code (case-insensitive), e.g. "BTC-USDT".
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -64,7 +64,7 @@ def query_batch_funding_rate(params={}, *, headers={}, **kwargs):
         params (dict): 
             contract_code (str): Contract code; defaults to all.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -113,7 +113,7 @@ def query_historical_funding_rate(contract_code, params={}, *, headers={}, **kwa
             page_index (int): Page index; 1 by default.
             page_size (int): Page size (1-50); 20 by default; 50 at most.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -165,7 +165,7 @@ def query_contract_info(params={}, *, headers={}, **kwargs):
             contract_type (str): Contract type: swap, this_week, next_week, quarter, next_quarter
             business_type (str): Business type: futures, swap, all; defaults to swap.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -212,7 +212,7 @@ def query_contract_elements(params={}, *, headers={}, **kwargs):
         params (dict): 
             contract_code (str): Contract code; defaults to all.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).

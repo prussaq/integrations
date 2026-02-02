@@ -18,7 +18,7 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_params` api parameter.
         asset (str): The valuation according to the certain fiat currency; defaults to BTC.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -73,7 +73,7 @@ def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
         data (dict): 
             contract_code (str): Contract code (case-insensitive), e.g. BTC-USDT.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
