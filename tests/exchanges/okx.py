@@ -11,17 +11,19 @@ import integrations.tests.shared.config as config
 from integrations.tests.shared.tools import load_secrets_file, get_api
 import integrations.exchanges.okx.api.public_data.rest as public_data
 import integrations.exchanges.okx.api.trading_account.rest as trading_account
+import integrations.exchanges.okx.api.order_book_trading.market_data as market_data
 
 secrets = load_secrets_file(config.SECRETS_PATH)
 api = get_api(secrets, config.OKX_API_PATH)
 
 # data = public_data.get_instruments('SWAP', {'instId': 'OP-USDT-SWAP'})
 # data = public_data.get_funding_rate('OP-USDT-SWAP')
+data = market_data.get_ticker('OP-USDT-SWAP')
 # data = public_data.get_funding_rate_history('OP-USDT-SWAP', {'limit': 10})
 # data = public_data.get_mark_price('SWAP', {'instId': 'OP-USDT-SWAP'})
 # data = trading_account.get_positions(api, {'instType': 'SWAP', 'instId': 'OP-USDT-SWAP'})
 # data = trading_account.get_balance(api, {'ccy': 'USDT'})
 # data = trading_account.get_balance(api)
-data = trading_account.set_leverage(api, '4', 'isolated', {'instId': 'OP-USDT-SWAP'})
+# data = trading_account.set_leverage(api, '4', 'isolated', {'instId': 'OP-USDT-SWAP'})
 
 print('data:', data)

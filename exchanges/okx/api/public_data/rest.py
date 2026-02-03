@@ -22,7 +22,7 @@ def get_instruments(inst_type, params={}, *, headers={}, **kwargs):
                 If instType is OPTION, instFamily is required.
             instId (str): Instrument ID.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -68,7 +68,7 @@ def get_funding_rate(inst_id, *, headers={}, **kwargs):
     Args:
         inst_id (str): Instrument ID, e.g. BTC-USD-SWAP, or ANY to return the funding rate of all swap symbols.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -117,7 +117,7 @@ def get_funding_rate_history(inst_id, params={}, *, headers={}, **kwargs):
             after (str): Pagination of data to return records earlier than the requested fundingTime
             limit (str): Number of results per request. The maximum is 400; The default is 400
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -166,7 +166,7 @@ def get_mark_price(inst_type, params={}, *, headers={}, **kwargs):
             instFamily (str): Instrument family. Applicable to FUTURES/SWAP/OPTION
             instId (str): Instrument ID, e.g. BTC-USD-SWAP
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
