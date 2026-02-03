@@ -21,7 +21,7 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
         params (dict):
             ccy (str): Single currency or multiple currencies (no more than 20) separated with comma, e.g. BTC or BTC,ETH.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -76,7 +76,7 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
             instId (str): Instrument ID, e.g. BTC-USDT-SWAP. 
             posId (str): Single position ID or multiple position IDs (no more than 20) separated with comma.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -131,7 +131,7 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
             ccy (str): Currency.
             posSide (str): Position side: long short
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -190,7 +190,7 @@ def increase_decrease_margin(api, data, *, headers={}, **kwargs):
             amt (str): Amount to be increased or decreased.
             ccy (str): Currency. Applicable to isolated MARGIN orders.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).

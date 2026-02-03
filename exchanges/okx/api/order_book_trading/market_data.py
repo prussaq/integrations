@@ -10,18 +10,16 @@ import integrations.shared.exchange.okx as okx
 
 logger = logging.getLogger(__name__)
 
-def place_order(api, order, *, headers={}, ttl=None, **kwargs):
+def get_ticker(inst_id, *, headers={}, **kwargs):
     """ 
-    Place an order.
+    Retrieve the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours. 
+    Best ask price may be lower than the best bid price during the pre-open period.
 
     Link: 
-        https://www.okx.com/docs-v5/en/#order-book-trading-trade-post-place-order
+        https://www.okx.com/docs-v5/en/#order-book-trading-market-data-get-ticker
     Args:
-        api (dict): API credentials. See `sign_headers` api parameter.
-        order (dict): Request body parameters (JSON). See the documentation at `Link`.
+        inst_id (dict): Instrument ID, e.g. BTC-USD-SWAP
         headers (dict): HTTP headers.
-            expTime (header, internal): DO NOT SET. Absolute expiration timestamp (ms); use `ttl` instead.
-        ttl (int): Receive window (ms); used to derive `expTime` header as signing_time + ttl.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -40,15 +38,9 @@ def place_order(api, order, *, headers={}, ttl=None, **kwargs):
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
-    method = 'POST'
-    endpoint = '/api/v5/trade/order'
-    url = base_url + endpoint
-    payload = json.dumps(order, separators=(',', ':'))
-    headers['Content-Type'] = 'application/json'
+    url = f"{base_url}/api/v5/market/ticker?instId={inst_id}"
 
-    def send(): 
-        okx.sign_headers(headers, api, method, endpoint, payload, ttl)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+    def send(): return http.get(url, headers=headers, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -57,6 +49,6 @@ def place_order(api, order, *, headers={}, ttl=None, **kwargs):
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
     try:
-        rate_limiter.acquire('okx.api.order_book_trading.trade_rest.place_order') 
+        rate_limiter.acquire('okx.api.order_book_trading.market_data.get_ticker') 
         return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to place order on OKX: %s', e); raise
+    except Exception as e: logger.error('Failed to get ticker from OKX: %s', e); raise
