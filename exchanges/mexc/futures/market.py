@@ -9,6 +9,7 @@ import integrations.shared.exchange.mexc as mexc
 
 logger = logging.getLogger(__name__)
 
+
 def get_contract_info(params={}, *, headers={}, **kwargs):
     """ 
     Get information about all contracts or specified one.
@@ -19,7 +20,7 @@ def get_contract_info(params={}, *, headers={}, **kwargs):
         params (dict):
             symbol (str): Symbol of the contract.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -50,10 +51,9 @@ def get_contract_info(params={}, *, headers={}, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('mexc.futures.market.get_contract_info') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get contract info from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.market.get_contract_info') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_index_price(symbol, *, headers={}, **kwargs):
     """ 
@@ -64,7 +64,7 @@ def get_index_price(symbol, *, headers={}, **kwargs):
     Args:
         symbol (str): Symbol of the contract.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -95,10 +95,9 @@ def get_index_price(symbol, *, headers={}, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try: 
-        rate_limiter.acquire('mexc.futures.market.get_index_price') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get index price from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.market.get_index_price') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_funding_rate(symbol, *, headers={}, **kwargs):
     """ 
@@ -109,7 +108,7 @@ def get_funding_rate(symbol, *, headers={}, **kwargs):
     Args:
         symbol (str): Symbol of the contract.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -140,10 +139,9 @@ def get_funding_rate(symbol, *, headers={}, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try: 
-        rate_limiter.acquire('mexc.futures.market.get_funding_rate') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get funding rate from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.market.get_funding_rate') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_candlestick_data(symbol, params={}, *, headers={}, **kwargs):
     """ 
@@ -158,7 +156,7 @@ def get_candlestick_data(symbol, params={}, *, headers={}, **kwargs):
             start (int): Start timestamp (seconds).
             end (int): End timestamp (seconds).
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -189,10 +187,9 @@ def get_candlestick_data(symbol, params={}, *, headers={}, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try: 
-        rate_limiter.acquire('mexc.futures.market.get_candlestick_data') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get candlestick data from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.market.get_candlestick_data') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_ticker(params={}, *, headers={}, **kwargs):
     """ 
@@ -204,7 +201,7 @@ def get_ticker(params={}, *, headers={}, **kwargs):
         params (dict):
             symbol (str): Symbol of the contract.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -235,7 +232,5 @@ def get_ticker(params={}, *, headers={}, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try: 
-        rate_limiter.acquire('mexc.futures.market.get_ticker') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get ticker from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.market.get_ticker') 
+    return execute_request(send, read, check, kwargs)

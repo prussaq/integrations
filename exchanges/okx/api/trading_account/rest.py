@@ -10,6 +10,7 @@ import integrations.shared.exchange.okx as okx
 
 logger = logging.getLogger(__name__)
 
+
 def get_balance(api, params={}, *, headers={}, **kwargs):
     """ 
     Retrieve a list of assets (with non-zero balance), remaining balance, and available amount in the trading account.
@@ -21,7 +22,7 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
         params (dict):
             ccy (str): Single currency or multiple currencies (no more than 20) separated with comma, e.g. BTC or BTC,ETH.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -56,10 +57,9 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.trading_account.rest.get_balance') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get balance from OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.trading_account.rest.get_balance') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_positions(api, params={}, *, headers={}, **kwargs):
     """ 
@@ -76,7 +76,7 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
             instId (str): Instrument ID, e.g. BTC-USDT-SWAP. 
             posId (str): Single position ID or multiple position IDs (no more than 20) separated with comma.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -111,10 +111,9 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.trading_account.rest.get_positions') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get positions from OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.trading_account.rest.get_positions') 
+    return execute_request(send, read, check, kwargs)
+
 
 def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
     """ 
@@ -131,7 +130,7 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
             ccy (str): Currency.
             posSide (str): Position side: long short
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -170,10 +169,9 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.trading_account.rest.set_leverage') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to set leverage on OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.trading_account.rest.set_leverage') 
+    return execute_request(send, read, check, kwargs)
+
 
 def increase_decrease_margin(api, data, *, headers={}, **kwargs):
     """ 
@@ -190,7 +188,7 @@ def increase_decrease_margin(api, data, *, headers={}, **kwargs):
             amt (str): Amount to be increased or decreased.
             ccy (str): Currency. Applicable to isolated MARGIN orders.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -224,7 +222,5 @@ def increase_decrease_margin(api, data, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.trading_account.rest.increase_decrease_margin') 
-        return execute_request(send, read, check, retries=1)
-    except Exception as e: logger.error('Failed to increase/decrease margin on OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.trading_account.rest.increase_decrease_margin') 
+    return execute_request(send, read, check, retries=1)

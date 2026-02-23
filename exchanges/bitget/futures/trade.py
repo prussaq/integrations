@@ -9,6 +9,7 @@ import integrations.shared.exchange.bitget as bitget
 
 logger = logging.getLogger(__name__)
 
+
 def place_order(api, data, *, headers={}, **kwargs):
     """ 
     Place an order.
@@ -19,7 +20,7 @@ def place_order(api, data, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -56,8 +57,6 @@ def place_order(api, data, *, headers={}, **kwargs):
         if code != '00000': 
             raise ApiError(f"Bitget returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bitget.futures.trade.place_order')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to place order on Bitget: %s', e); raise
+    rate_limiter.acquire('bitget.futures.trade.place_order')  
+    return execute_request(send, read, check, kwargs)
 

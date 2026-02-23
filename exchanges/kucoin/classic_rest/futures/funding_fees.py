@@ -9,6 +9,7 @@ import integrations.shared.exchange.kucoin as kucoin
 
 logger = logging.getLogger(__name__)
 
+
 def get_current_funding_rate(symbol, *, headers={}, **kwargs):
     """ 
     Get current funding rate for the contract.
@@ -18,7 +19,7 @@ def get_current_funding_rate(symbol, *, headers={}, **kwargs):
     Args:
         symbol (str): Symbol of the contract.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -49,10 +50,9 @@ def get_current_funding_rate(symbol, *, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('kucoin.classic_rest.futures.funding_fees.get_current_funding_rate') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get current funding rate from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.funding_fees.get_current_funding_rate') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
     """ 
@@ -65,7 +65,7 @@ def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
         from_ (int): Begin time (milliseconds).
         to (int): End time (milliseconds).
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -96,10 +96,9 @@ def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('kucoin.classic_rest.futures.funding_fees.get_public_funding_history')
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get public funding history from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.funding_fees.get_public_funding_history')
+    return execute_request(send, read, check, kwargs)
+
 
 def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs):
     """ 
@@ -118,7 +117,7 @@ def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs)
             forward (bool): 
             maxCount (int): Maximum records. Default: 10
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -154,7 +153,5 @@ def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs)
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('kucoin.classic_rest.futures.funding_fees.get_private_funding_history') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get private funding history from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.funding_fees.get_private_funding_history') 
+    return execute_request(send, read, check, kwargs)
