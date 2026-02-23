@@ -9,6 +9,7 @@ import integrations.shared.exchange.okx as okx
 
 logger = logging.getLogger(__name__)
 
+
 def get_instruments(inst_type, params={}, *, headers={}, **kwargs):
     """ 
     Retrieve a list of instruments with open contracts for OKX.
@@ -54,10 +55,9 @@ def get_instruments(inst_type, params={}, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.public_data.rest.get_instruments') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get instruments from OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.public_data.rest.get_instruments') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_funding_rate(inst_id, *, headers={}, **kwargs):
     """ 
@@ -99,10 +99,9 @@ def get_funding_rate(inst_id, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.public_data.rest.get_funding_rate') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get funding rate from OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.public_data.rest.get_funding_rate') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_funding_rate_history(inst_id, params={}, *, headers={}, **kwargs):
     """ 
@@ -149,10 +148,9 @@ def get_funding_rate_history(inst_id, params={}, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.public_data.rest.get_funding_rate_history') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get funding rate history from OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.public_data.rest.get_funding_rate_history') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_mark_price(inst_type, params={}, *, headers={}, **kwargs):
     """ 
@@ -198,7 +196,5 @@ def get_mark_price(inst_type, params={}, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.public_data.rest.get_mark_price') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get mark price from OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.public_data.rest.get_mark_price') 
+    return execute_request(send, read, check, kwargs)

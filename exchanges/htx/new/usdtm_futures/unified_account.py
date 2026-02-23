@@ -8,6 +8,7 @@ import integrations.shared.exchange.htx as htx
 
 logger = logging.getLogger(__name__)
 
+
 def query_unified_account_assets(api, params={}, *, headers={}, **kwargs):
     """ 
     Query unified account assets (positions).
@@ -55,7 +56,5 @@ def query_unified_account_assets(api, params={}, *, headers={}, **kwargs):
         if code != 200: 
             raise ApiError(f"HTX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.unified_account.query_unified_account_assets') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get unified account assets from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.unified_account.query_unified_account_assets') 
+    return execute_request(send, read, check, kwargs)

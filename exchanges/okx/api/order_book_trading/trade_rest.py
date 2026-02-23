@@ -10,6 +10,7 @@ import integrations.shared.exchange.okx as okx
 
 logger = logging.getLogger(__name__)
 
+
 def place_order(api, order, *, headers={}, ttl=None, **kwargs):
     """ 
     Place an order.
@@ -56,7 +57,5 @@ def place_order(api, order, *, headers={}, ttl=None, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.order_book_trading.trade_rest.place_order') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to place order on OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.order_book_trading.trade_rest.place_order') 
+    return execute_request(send, read, check, kwargs)

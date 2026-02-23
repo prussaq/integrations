@@ -14,6 +14,7 @@ FUTURES_BASE_URL = 'https://futures.mexc.com'
 
 logger = logging.getLogger(__name__)
 
+
 def sign_headers(headers, api, data):
     def gen_signature(timestamp, data):
         def md5(value): return hashlib.md5(value.encode('utf-8')).hexdigest()
@@ -27,6 +28,7 @@ def sign_headers(headers, api, data):
     headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
     headers['Authorization'] = api['uid']
 
+
 def get_account_assets(api, **kwargs):
     """ 
     Get all account assets.
@@ -35,7 +37,7 @@ def get_account_assets(api, **kwargs):
         https://www.mexc.com/api-docs/futures/account-and-trading-endpoints#get-all-account-assets
     Args:
         api (dict): API credentials
-        kwargs (dict):
+        kwargs:
             timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
@@ -65,10 +67,9 @@ def get_account_assets(api, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('mexc.futures.web.get_account_assets') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get account assets from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.web.get_account_assets') 
+    return execute_request(send, read, check, kwargs)
+
 
 def place_order(api, data, **kwargs):
     """ 
@@ -80,7 +81,7 @@ def place_order(api, data, **kwargs):
     Args:
         api (dict): WEB API credentials.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        kwargs (dict):
+        kwargs:
             timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
     Returns:
@@ -97,18 +98,17 @@ def place_order(api, data, **kwargs):
     headers = {'Content-Type': 'application/json'}
     timeout = kwargs.get('timeout', TIMEOUT)
 
-    try:
-        rate_limiter.acquire('mexc.futures.web.place_order') 
-        sign_headers(headers, api, data)
-        response = cffi_requests.post(url, headers=headers, json=data, timeout=timeout)
-        body = response.json()
-        if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
-        if not body.get('success'): 
-            raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
-                response=response, body=body)
-        if kwargs.get('full'): return response, body
-        return body
-    except Exception as e: logger.error('Failed to place order on MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.web.place_order') 
+    sign_headers(headers, api, data)
+    response = cffi_requests.post(url, headers=headers, json=data, timeout=timeout)
+    body = response.json()
+    if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
+    if not body.get('success'): 
+        raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
+            response=response, body=body)
+    if kwargs.get('full'): return response, body
+    return body
+
 
 def place_TP_SL_order(api, data, **kwargs):
     """ 
@@ -119,7 +119,7 @@ def place_TP_SL_order(api, data, **kwargs):
     Args:
         api (dict): WEB API credentials.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        kwargs (dict):
+        kwargs:
             timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
     Returns:
@@ -146,7 +146,5 @@ def place_TP_SL_order(api, data, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('mexc.futures.web.place_TP_SL_order') 
-        return execute_request(send, read, check, retries=1)
-    except Exception as e: logger.error('Failed to get take profit and stop loss order on MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.web.place_TP_SL_order') 
+    return execute_request(send, read, check, retries=1)

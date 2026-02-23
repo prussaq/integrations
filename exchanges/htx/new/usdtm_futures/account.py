@@ -8,6 +8,7 @@ import integrations.shared.exchange.htx as htx
 
 logger = logging.getLogger(__name__)
 
+
 def query_asset_valuation(api, asset, *, headers={}, **kwargs):
     """ 
     Query asset valuation (balance).
@@ -57,10 +58,9 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.account.query_asset_valuation') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get asset valuation from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.account.query_asset_valuation') 
+    return execute_request(send, read, check, kwargs)
+
 
 def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
     """ 
@@ -111,10 +111,9 @@ def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.account.query_account_info_isolated') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get account info (isolated) from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.account.query_account_info_isolated') 
+    return execute_request(send, read, check, kwargs)
+
 
 def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
     """ 
@@ -165,7 +164,5 @@ def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.account.query_position_info_isolated') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get position info (isolated) from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.account.query_position_info_isolated') 
+    return execute_request(send, read, check, kwargs)

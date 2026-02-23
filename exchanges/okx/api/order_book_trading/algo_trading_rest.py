@@ -10,6 +10,7 @@ import integrations.shared.exchange.okx as okx
 
 logger = logging.getLogger(__name__)
 
+
 def place_algo_order(api, order, *, headers={}, **kwargs):
     """ 
     The algo order includes trigger order, oco order, chase order, conditional order, twap order and trailing order.
@@ -54,7 +55,5 @@ def place_algo_order(api, order, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.order_book_trading.algo_trading_rest.place_algo_order') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to place algo order on OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.order_book_trading.algo_trading_rest.place_algo_order') 
+    return execute_request(send, read, check, kwargs)

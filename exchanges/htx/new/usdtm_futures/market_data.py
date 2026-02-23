@@ -8,6 +8,7 @@ import integrations.shared.exchange.htx as htx
 
 logger = logging.getLogger(__name__)
 
+
 def get_market_depth(contract_code, type, *, headers={}, **kwargs):
     """ 
     Get market depth.
@@ -50,10 +51,9 @@ def get_market_depth(contract_code, type, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err-code')}: {body.get('err-msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.market_data.get_market_depth') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get market depth from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.market_data.get_market_depth') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_market_BBO_data(params={}, *, headers={}, **kwargs):
     """ 
@@ -100,10 +100,9 @@ def get_market_BBO_data(params={}, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err-code')}: {body.get('err-msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.market_data.get_market_BBO_data') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get market BBO data from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.market_data.get_market_BBO_data') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_kline_data(contract_code, period, params, *, headers={}, **kwargs):
     """ 
@@ -156,10 +155,9 @@ def get_kline_data(contract_code, period, params, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err-code')}: {body.get('err-msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.market_data.get_kline_data') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get kline data from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.market_data.get_kline_data') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_last_trade(params={}, *, headers={}, **kwargs):
     """ 
@@ -208,7 +206,5 @@ def get_last_trade(params={}, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err-code')}: {body.get('err-msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.market_data.get_last_trade') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get last trade from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.market_data.get_last_trade') 
+    return execute_request(send, read, check, kwargs)
