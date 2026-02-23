@@ -8,6 +8,7 @@ import integrations.shared.exchange.dydx as dydx
 
 logger = logging.getLogger(__name__)
 
+
 def get_perpetual_markets(params={}, *, headers={}, **kwargs):
     """ 
     Retrieves perpetual markets..
@@ -19,7 +20,7 @@ def get_perpetual_markets(params={}, *, headers={}, **kwargs):
             market (str): The specific market ticker to retrieve. If not provided, all markets are returned.
             limit (int): Maximum number of asset positions to return in the response.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -47,10 +48,9 @@ def get_perpetual_markets(params={}, *, headers={}, **kwargs):
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('dydx.indexer.http.markets.get_perpetual_markets') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get perpetual markets from dYdX: %s', e); raise
+    rate_limiter.acquire('dydx.indexer.http.markets.get_perpetual_markets') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
     """ 
@@ -66,7 +66,7 @@ def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
             fromISO (str): The start timestamp in ISO format.
             toISO (str): The end timestamp in ISO format.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -95,7 +95,5 @@ def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('dydx.indexer.http.markets.get_candles') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get candles from dYdX: %s', e); raise
+    rate_limiter.acquire('dydx.indexer.http.markets.get_candles') 
+    return execute_request(send, read, check, kwargs)

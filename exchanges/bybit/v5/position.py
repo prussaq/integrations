@@ -9,6 +9,7 @@ import integrations.shared.exchange.bybit as bybit
 
 logger = logging.getLogger(__name__)
 
+
 def get_position_info(api, category, params={}, *, headers={}, **kwargs):
     """ 
     Query real-time position data, such as position size, cumulative realized PNL, etc.
@@ -63,10 +64,9 @@ def get_position_info(api, category, params={}, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.position.get_position_info')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get position info from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.position.get_position_info')  
+    return execute_request(send, read, check, kwargs)
+
 
 def set_leverage(api, category, symbol, *, buy, sell, headers={}, **kwargs):
     """
@@ -119,10 +119,9 @@ def set_leverage(api, category, symbol, *, buy, sell, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.position.set_leverage')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to set leverage on Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.position.set_leverage')  
+    return execute_request(send, read, check, kwargs)
+
 
 def set_trading_stop(api, data, *, headers={}, **kwargs):
     """
@@ -168,10 +167,9 @@ def set_trading_stop(api, data, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.position.set_trading_stop')  
-        return execute_request(send, read, check, retries=1)
-    except Exception as e: logger.error('Failed to set trading stop on Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.position.set_trading_stop')  
+    return execute_request(send, read, check, retries=1)
+
 
 def get_closed_PnL(api, category, params={}, *, headers={}, **kwargs):
     """ 
@@ -231,7 +229,5 @@ def get_closed_PnL(api, category, params={}, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.position.get_closed_PnL')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get closed PnL from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.position.get_closed_PnL')  
+    return execute_request(send, read, check, kwargs)

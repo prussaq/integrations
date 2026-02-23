@@ -8,6 +8,7 @@ import integrations.shared.exchange.htx as htx
 
 logger = logging.getLogger(__name__)
 
+
 def query_funding_rate(contract_code, *, headers={}, **kwargs):
     """ 
     Query current funding rate for the contract.
@@ -49,10 +50,9 @@ def query_funding_rate(contract_code, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_funding_rate') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get current funding rate from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_funding_rate') 
+    return execute_request(send, read, check, kwargs)
+
 
 def query_batch_funding_rate(params={}, *, headers={}, **kwargs):
     """ 
@@ -96,10 +96,9 @@ def query_batch_funding_rate(params={}, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_batch_funding_rate') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get batch funding rate from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_batch_funding_rate') 
+    return execute_request(send, read, check, kwargs)
+
 
 def query_historical_funding_rate(contract_code, params={}, *, headers={}, **kwargs):
     """ 
@@ -146,10 +145,9 @@ def query_historical_funding_rate(contract_code, params={}, *, headers={}, **kwa
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_historical_funding_rate') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get historical funding rate from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_historical_funding_rate') 
+    return execute_request(send, read, check, kwargs)
+
 
 def query_contract_info(params={}, *, headers={}, **kwargs):
     """ 
@@ -197,10 +195,9 @@ def query_contract_info(params={}, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_contract_info') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get contract info from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_contract_info') 
+    return execute_request(send, read, check, kwargs)
+
 
 def query_contract_elements(params={}, *, headers={}, **kwargs):
     """ 
@@ -244,7 +241,5 @@ def query_contract_elements(params={}, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_contract_elements') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get contract elements from HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.reference_data.query_contract_elements') 
+    return execute_request(send, read, check, kwargs)

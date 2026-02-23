@@ -10,6 +10,7 @@ import integrations.shared.exchange.okx as okx
 
 logger = logging.getLogger(__name__)
 
+
 def get_ticker(inst_id, *, headers={}, **kwargs):
     """ 
     Retrieve the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours. 
@@ -48,7 +49,5 @@ def get_ticker(inst_id, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.order_book_trading.market_data.get_ticker') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get ticker from OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.order_book_trading.market_data.get_ticker') 
+    return execute_request(send, read, check, kwargs)

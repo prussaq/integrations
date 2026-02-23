@@ -9,6 +9,7 @@ import integrations.shared.exchange.binance as binance
 
 logger = logging.getLogger(__name__)
 
+
 def get_exchange_info(*, headers={}, **kwargs):
     """ 
     Current exchange trading rules and symbol information.
@@ -47,10 +48,9 @@ def get_exchange_info(*, headers={}, **kwargs):
         if isinstance(body, dict) and 'code' in body:
             raise ApiError(f"Binance returned code {body['code']}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_exchange_info')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get exchange info from Binance: %s', e); raise
+    rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_exchange_info')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     """ 
@@ -101,10 +101,9 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
         if isinstance(body, dict) and 'code' in body:
             raise ApiError(f"Binance returned code {body['code']}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_kline')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get kline from Binance: %s', e); raise
+    rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_kline')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_funding_rate_history(params={}, *, headers={}, **kwargs):
     """ 
@@ -153,10 +152,9 @@ def get_funding_rate_history(params={}, *, headers={}, **kwargs):
         if isinstance(body, dict) and 'code' in body:
             raise ApiError(f"Binance returned code {body['code']}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_funding_rate_history')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get funding rate history from Binance: %s', e); raise
+    rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_funding_rate_history')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_funding_rate_info(*, headers={}, **kwargs):
     """ 
@@ -196,10 +194,9 @@ def get_funding_rate_info(*, headers={}, **kwargs):
         if isinstance(body, dict) and 'code' in body:
             raise ApiError(f"Binance returned code {body['code']}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_funding_rate_info')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get funding rate info from Binance: %s', e); raise
+    rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_funding_rate_info')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_price_ticker_v2(params={}, *, headers={}, **kwargs):
     """ 
@@ -243,7 +240,5 @@ def get_price_ticker_v2(params={}, *, headers={}, **kwargs):
         if isinstance(body, dict) and 'code' in body:
             raise ApiError(f"Binance returned code {body['code']}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_price_ticker_v2')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get price ticker (V2) from Binance: %s', e); raise
+    rate_limiter.acquire('binance.derivatives.usdsm_futures.market_data.rest.get_price_ticker_v2')  
+    return execute_request(send, read, check, kwargs)
