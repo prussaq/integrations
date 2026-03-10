@@ -19,6 +19,8 @@ api = get_api(secrets, config.MEXC_API_PATH)
 # data = market.get_contract_info()
 # data = account_trading.get_currency_asset(api, 'USDT')
 # data = account_trading.get_account_assets(api)
-data = account_trading.get_open_positions(api)
+# data = account_trading.get_open_positions(api)
+data = account_trading.get_funding_fee_details(api)
+
 
 print('data:', data)
