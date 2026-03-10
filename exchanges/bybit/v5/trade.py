@@ -9,6 +9,7 @@ import integrations.shared.exchange.bybit as bybit
 
 logger = logging.getLogger(__name__)
 
+
 def place_order(api, data, *, headers={}, **kwargs):
     """
     Place order for Spot, Margin trading, USDT/USDC perpetual, USDT/USDC futures, Inverse Futures and Options.
@@ -43,16 +44,14 @@ def place_order(api, data, *, headers={}, **kwargs):
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    try:
-        rate_limiter.acquire('bybit.v5.trade.place_order')  
-        bybit.sign_headers(headers, api, recv_window, payload)
-        response = http.post(url, data=payload, headers=headers, timeout=timeout)
-        body = response.json()
-        if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
-        code = body.get('retCode')
-        if code != 0: 
-            raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
-        if kwargs.get('full'): return response, body
-        return body
-    except Exception as e: logger.error('Failed to place order on Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.trade.place_order')  
+    bybit.sign_headers(headers, api, recv_window, payload)
+    response = http.post(url, data=payload, headers=headers, timeout=timeout)
+    body = response.json()
+    if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
+    code = body.get('retCode')
+    if code != 0: 
+        raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
+    if kwargs.get('full'): return response, body
+    return body
 

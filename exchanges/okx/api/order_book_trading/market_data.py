@@ -1,32 +1,30 @@
 import logging
+import json
 import requests
+from urllib.parse import urlencode
 
 from integrations.shared import rate_limiter
 from integrations.shared.exceptions import ApiError
 from integrations.shared.functions import execute_request
-import integrations.shared.exchange.htx as htx
+import integrations.shared.exchange.okx as okx
 
 logger = logging.getLogger(__name__)
 
 
-def query_unified_account_assets(api, params={}, *, headers={}, **kwargs):
+def get_ticker(inst_id, *, headers={}, **kwargs):
     """ 
-    Query unified account assets (positions).
+    Retrieve the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours. 
+    Best ask price may be lower than the best bid price during the pre-open period.
 
     Link: 
-        https://www.htx.com/en-us/opend/newApiPages/?id=10000074-77b7-11ed-9966-0242ac110003
+        https://www.okx.com/docs-v5/en/#order-book-trading-market-data-get-ticker
     Args:
-        api (dict): API credentials. See `sign_params` api parameter.
-        params (dict): 
-            contract_code (str): Contract code; defaults to all.
+        inst_id (dict): Instrument ID, e.g. BTC-USD-SWAP
         headers (dict): HTTP headers.
-        kwargs: 
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
-            retries (int): Number of retry attempts.
-            delay (float): Initial retry delay in seconds.
-            backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
     Returns:
         dict: Parsed response body by default.
@@ -39,22 +37,17 @@ def query_unified_account_assets(api, params={}, *, headers={}, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
-    method = 'GET'
-    host = base_url.replace('https://', '')
-    path = '/linear-swap-api/v3/unified_account_info'
-    url = f"{base_url}{path}"
+    base_url = kwargs.get('base_url', okx.BASE_URL)
+    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    url = f"{base_url}/api/v5/market/ticker?instId={inst_id}"
 
-    def send(): 
-        htx.sign_params(params, api, method, host, path)
-        return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, headers=headers, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
         code = body.get('code')
-        if code != 200: 
-            raise ApiError(f"HTX returned code {code}: {body.get('msg')}", response=response, body=body)
+        if code != '0': 
+            raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    rate_limiter.acquire('htx.new.usdtm_futures.unified_account.query_unified_account_assets') 
+    rate_limiter.acquire('okx.api.order_book_trading.market_data.get_ticker') 
     return execute_request(send, read, check, kwargs)

@@ -9,6 +9,7 @@ import integrations.shared.exchange.kucoin as kucoin
 
 logger = logging.getLogger(__name__)
 
+
 def get_public_token(*, headers={},**kwargs):
     """ 
     Get public futures websocket token and additional info.
@@ -17,7 +18,7 @@ def get_public_token(*, headers={},**kwargs):
         https://www.kucoin.com/docs-new/websocket-api/base-info/get-public-token-futures
     Args:
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -48,10 +49,9 @@ def get_public_token(*, headers={},**kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try: 
-        rate_limiter.acquire('kucoin.classic_websocket.base_info.futures.get_public_token')
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get public futures websocket token from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_websocket.base_info.futures.get_public_token')
+    return execute_request(send, read, check, kwargs)
+
 
 def get_private_token(api, *, headers={}, **kwargs):
     """ 
@@ -62,7 +62,7 @@ def get_private_token(api, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -97,7 +97,5 @@ def get_private_token(api, *, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('kucoin.classic_websocket.base_info.futures.get_private_token') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get private futures websocket token from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_websocket.base_info.futures.get_private_token') 
+    return execute_request(send, read, check, kwargs)

@@ -10,6 +10,7 @@ import integrations.shared.exchange.kucoin as kucoin
 
 logger = logging.getLogger(__name__)
 
+
 def add_order(api, data, *, headers={}, **kwargs):
     """ 
     Place futures order.
@@ -20,7 +21,7 @@ def add_order(api, data, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -44,18 +45,17 @@ def add_order(api, data, *, headers={}, **kwargs):
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    try:
-        rate_limiter.acquire('kucoin.classic_rest.futures.orders.add_order')
-        kucoin.sign_headers(headers, api, method, endpoint, payload)
-        response = http.post(url, data=payload, headers=headers, timeout=timeout)
-        body = response.json()
-        if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
-        code = body.get('code')
-        if code != '200000': 
-            raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
-        if kwargs.get('full'): return response, body
-        return body
-    except Exception as e: logger.error('Failed to add order on KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.orders.add_order')
+    kucoin.sign_headers(headers, api, method, endpoint, payload)
+    response = http.post(url, data=payload, headers=headers, timeout=timeout)
+    body = response.json()
+    if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
+    code = body.get('code')
+    if code != '200000': 
+        raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
+    if kwargs.get('full'): return response, body
+    return body
+
 
 def add_TP_SL_order(api, data, *, headers={}, **kwargs):
     """ 
@@ -67,7 +67,7 @@ def add_TP_SL_order(api, data, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -101,7 +101,5 @@ def add_TP_SL_order(api, data, *, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try: 
-        rate_limiter.acquire('kucoin.classic_rest.futures.orders.add_TP_SL_order') 
-        return execute_request(send, read, check, retries=1)
-    except Exception as e: logger.error('Failed to add take profit and stop loss order on KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.orders.add_TP_SL_order') 
+    return execute_request(send, read, check, retries=1)

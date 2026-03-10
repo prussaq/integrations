@@ -1,3 +1,7 @@
+# Local configuration files
+.creds/
+config.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -41,10 +45,6 @@ htmlcov/
 .pytest_cache/
 nosetests.xml
 coverage.xml
-
-# Local configuration files
-config.py
-secrets.json
 
 # Ensure the library folder itself is included
 !integrations/

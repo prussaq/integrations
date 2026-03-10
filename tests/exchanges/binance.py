@@ -17,6 +17,8 @@ secrets = load_secrets_file(config.SECRETS_PATH)
 # data = market_data.get_kline('OPUSDT', '1d', {'limit': 10})
 # data = market_data.get_funding_rate_history({'symbol': 'OPUSDT'})
 # data = market_data.get_funding_rate_info()
-data = market_data.get_price_ticker_v2()
+# data = market_data.get_price_ticker_v2()
+data = market_data.get_exchange_info()
+
 
 print('data:', data)

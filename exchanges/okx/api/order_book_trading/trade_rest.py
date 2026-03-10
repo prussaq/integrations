@@ -10,6 +10,7 @@ import integrations.shared.exchange.okx as okx
 
 logger = logging.getLogger(__name__)
 
+
 def place_order(api, order, *, headers={}, ttl=None, **kwargs):
     """ 
     Place an order.
@@ -22,7 +23,7 @@ def place_order(api, order, *, headers={}, ttl=None, **kwargs):
         headers (dict): HTTP headers.
             expTime (header, internal): DO NOT SET. Absolute expiration timestamp (ms); use `ttl` instead.
         ttl (int): Receive window (ms); used to derive `expTime` header as signing_time + ttl.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -56,7 +57,5 @@ def place_order(api, order, *, headers={}, ttl=None, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('okx.api.order_book_trading.trade_rest.place_order') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to place order on OKX: %s', e); raise
+    rate_limiter.acquire('okx.api.order_book_trading.trade_rest.place_order') 
+    return execute_request(send, read, check, kwargs)

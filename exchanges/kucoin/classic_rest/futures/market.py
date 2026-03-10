@@ -9,6 +9,7 @@ import integrations.shared.exchange.kucoin as kucoin
 
 logger = logging.getLogger(__name__)
 
+
 def get_symbol(symbol, *, headers={}, **kwargs):
     """ 
     Get information about tradable contract.
@@ -18,7 +19,7 @@ def get_symbol(symbol, *, headers={}, **kwargs):
     Args:
         symbol (str): Symbol of the contract.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -49,10 +50,9 @@ def get_symbol(symbol, *, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('kucoin.classic_rest.futures.market.get_symbol') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get symbol from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.market.get_symbol') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_all_symbols(*, headers={}, **kwargs):
     """ 
@@ -62,7 +62,7 @@ def get_all_symbols(*, headers={}, **kwargs):
         https://www.kucoin.com/docs-new/rest/futures-trading/market-data/get-all-symbols
     Args:
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -93,10 +93,9 @@ def get_all_symbols(*, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('kucoin.classic_rest.futures.market.get_all_symbols') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get all symbols from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.market.get_all_symbols') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_ticker(symbol, *, headers={}, **kwargs):
     """ 
@@ -107,7 +106,7 @@ def get_ticker(symbol, *, headers={}, **kwargs):
     Args:
         symbol (str): Symbol of the contract.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -138,10 +137,9 @@ def get_ticker(symbol, *, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('kucoin.classic_rest.futures.market.get_ticker')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get ticker from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.market.get_ticker')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_klines(symbol, granularity, params={}, *, headers={}, **kwargs):
     """ 
@@ -157,7 +155,7 @@ def get_klines(symbol, granularity, params={}, *, headers={}, **kwargs):
             from: Start time (milliseconds)
             to: End time (milliseconds)
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -190,8 +188,6 @@ def get_klines(symbol, granularity, params={}, *, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('kucoin.classic_rest.futures.market.get_klines')
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get klines from KuCoin: %s', e); raise
+    rate_limiter.acquire('kucoin.classic_rest.futures.market.get_klines')
+    return execute_request(send, read, check, kwargs)
 

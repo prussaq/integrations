@@ -9,6 +9,7 @@ import integrations.shared.exchange.bybit as bybit
 
 logger = logging.getLogger(__name__)
 
+
 def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     """ 
     Query for historical klines (also known as candles/candlesticks). 
@@ -58,10 +59,9 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.market.get_kline')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get kline from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.market.get_kline')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_instruments_info(category, params={}, *, headers={}, **kwargs):
     """ 
@@ -111,10 +111,9 @@ def get_instruments_info(category, params={}, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.market.get_instruments_info')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get instruments info from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.market.get_instruments_info')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_tickers(category, params={}, *, headers={}, **kwargs):
     """ 
@@ -161,10 +160,9 @@ def get_tickers(category, params={}, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.market.get_tickers')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get tickers from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.market.get_tickers')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwargs):
     """ 
@@ -213,7 +211,5 @@ def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwarg
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.market.get_funding_rate_history')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get funding rate history from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.market.get_funding_rate_history')  
+    return execute_request(send, read, check, kwargs)

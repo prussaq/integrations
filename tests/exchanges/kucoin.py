@@ -22,6 +22,7 @@ api = get_api(secrets, config.KUCOIN_API_PATH)
 # data = get_public_token()
 # data = account_funding.get_futures_account(api)
 # data = positions.get_position_list(api, {'currency': 'USDT'})
-data = positions.get_position_details(api, 'CUDISUSDTM')
+# data = positions.get_position_details(api, 'CUDISUSDTM')
+data = positions.get_positions_history(api, {'symbol':'GOATUSDTM'})
 
 print('data:', data)

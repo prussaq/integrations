@@ -8,6 +8,7 @@ import integrations.shared.exchange.htx as htx
 
 logger = logging.getLogger(__name__)
 
+
 def place_order(api, data, *, headers={}, **kwargs):
     """ 
     Place an isolated order.
@@ -56,7 +57,5 @@ def place_order(api, data, *, headers={}, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('htx.new.usdtm_futures.trade.place_order') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to place order on HTX: %s', e); raise
+    rate_limiter.acquire('htx.new.usdtm_futures.trade.place_order') 
+    return execute_request(send, read, check, kwargs)

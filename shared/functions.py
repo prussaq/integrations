@@ -1,11 +1,13 @@
 import logging
 import time
+import random
 import requests
 
 from integrations.shared.exceptions import RequestFailed
 from integrations.shared.settings import RETRIES, DELAY, BACKOFF
 
 logger = logging.getLogger(__name__)
+
 
 def execute_request(send, read, check, settings={}):
     """
@@ -54,18 +56,17 @@ def execute_request(send, read, check, settings={}):
             body = read(response)
             break
         except requests.exceptions.HTTPError as e: 
-            logger.warning("Request attempt %d failed with HTTP error: %s", attempt, e, exc_info=True, 
-                extra={"status_code": response.status_code})
+            logger.debug("Request attempt %d failed with HTTP %s: %s", attempt, response.status_code, e)
             errors.append(e)
             if response.status_code < 500: 
                 raise RequestFailed(f"non-retryable error encountered on attempt {attempt}", errors)
         except Exception as e:
-            logger.warning("Request attempt %d failed: %s", attempt, e, exc_info=True, 
-                extra={'response': response, 'body_truncated': str(body)[:1000]})
+            logger.debug("Request attempt %d failed: %s", attempt, e) 
             errors.append(e)
         if attempt == retries: raise RequestFailed(f"retry budget of {retries} attempt(s) exhausted", errors)
         time.sleep(delay)
         delay *= backoff
+        delay *= random.uniform(0.8, 1.2)
 
     check(response, body)
     if settings.get('full'): return response, body

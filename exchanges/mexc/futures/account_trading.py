@@ -9,6 +9,7 @@ import integrations.shared.exchange.mexc as mexc
 
 logger = logging.getLogger(__name__)
 
+
 def get_account_assets(api, *, headers={}, **kwargs):
     """ 
     Get all account assets.
@@ -18,7 +19,7 @@ def get_account_assets(api, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         headers (dict): HTTP headers, e.g. Recv-Window
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -52,10 +53,9 @@ def get_account_assets(api, *, headers={}, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('mexc.futures.account_trading.get_account_assets') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get account assets from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.account_trading.get_account_assets') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_currency_asset(api, currency, *, headers={}, **kwargs):
     """ 
@@ -67,7 +67,7 @@ def get_currency_asset(api, currency, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         currency (str): Currency name.
         headers (dict): HTTP headers, e.g. Recv-Window
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -101,10 +101,9 @@ def get_currency_asset(api, currency, *, headers={}, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('mexc.futures.account_trading.get_currency_asset') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get currency asset from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.account_trading.get_currency_asset') 
+    return execute_request(send, read, check, kwargs)
+
 
 def get_open_positions(api, params={}, *, headers={}, **kwargs):
     """ 
@@ -118,7 +117,7 @@ def get_open_positions(api, params={}, *, headers={}, **kwargs):
             symbol (str): Symbol of the contract.
             positionId (long): Position ID.
         headers (dict): HTTP headers, e.g. Recv-Window
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -153,7 +152,5 @@ def get_open_positions(api, params={}, *, headers={}, **kwargs):
             raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
                 response=response, body=body)
 
-    try:
-        rate_limiter.acquire('mexc.futures.account_trading.get_open_positions') 
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get open positions from MEXC: %s', e); raise
+    rate_limiter.acquire('mexc.futures.account_trading.get_open_positions') 
+    return execute_request(send, read, check, kwargs)

@@ -9,6 +9,7 @@ import integrations.shared.exchange.bitget as bitget
 
 logger = logging.getLogger(__name__)
 
+
 def get_single_account(api, symbol, product_type, margin_coin, *, headers={}, **kwargs):
     """ 
     Get account details with the given 'marginCoin' and 'productType'.
@@ -21,7 +22,7 @@ def get_single_account(api, symbol, product_type, margin_coin, *, headers={}, **
         product_type (str): Product type: USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
         margin_coin (str): Margin coin.
         headers (dict): HTTP headers.
-        kwargs (dict):
+        kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -58,7 +59,5 @@ def get_single_account(api, symbol, product_type, margin_coin, *, headers={}, **
         if code != '00000': 
             raise ApiError(f"Bitget returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bitget.futures.account.get_single_account')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get single account from Bitget: %s', e); raise
+    rate_limiter.acquire('bitget.futures.account.get_single_account')  
+    return execute_request(send, read, check, kwargs)

@@ -9,6 +9,7 @@ import integrations.shared.exchange.bybit as bybit
 
 logger = logging.getLogger(__name__)
 
+
 def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
     """ 
     Query the available amount to transfer of a specific coin in the Unified wallet.
@@ -57,10 +58,9 @@ def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.account.get_transferable_amount_unified')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get transferable amount (unified) from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.account.get_transferable_amount_unified')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_transaction_log(api, params={}, *, headers={}, **kwargs):
     """ 
@@ -123,10 +123,9 @@ def get_transaction_log(api, params={}, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.account.get_transaction_log')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get transaction log (unified) from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.account.get_transaction_log')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_account_info(api, *, headers={}, **kwargs):
     """ 
@@ -172,7 +171,5 @@ def get_account_info(api, *, headers={}, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bybit.v5.account.get_account_info')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get account info from Bybit: %s', e); raise
+    rate_limiter.acquire('bybit.v5.account.get_account_info')  
+    return execute_request(send, read, check, kwargs)

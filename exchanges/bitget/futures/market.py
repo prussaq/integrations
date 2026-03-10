@@ -9,6 +9,7 @@ import integrations.shared.exchange.bitget as bitget
 
 logger = logging.getLogger(__name__)
 
+
 def get_ticker(symbol, product_type, *, headers={}, **kwargs):
     """ 
     Get ticker data of the given 'productType' and 'symbol'.
@@ -19,7 +20,7 @@ def get_ticker(symbol, product_type, *, headers={}, **kwargs):
         symbol (str): Trading pair.
         product_type (str): Product type: USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -50,10 +51,9 @@ def get_ticker(symbol, product_type, *, headers={}, **kwargs):
         if code != '00000': 
             raise ApiError(f"Bitget returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bitget.futures.market.get_ticker')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get ticker from Bitget: %s', e); raise
+    rate_limiter.acquire('bitget.futures.market.get_ticker')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_candlestick_data(symbol, product_type, granularity, params={}, *, headers={}, **kwargs):
     """ 
@@ -72,7 +72,7 @@ def get_candlestick_data(symbol, product_type, granularity, params={}, *, header
             kLineType (str): Candlestick chart types: MARKET tick; MARK mark; INDEX index; MARKET by default.
             limit (int): Default: 100, maximum: 1000
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -106,10 +106,9 @@ def get_candlestick_data(symbol, product_type, granularity, params={}, *, header
         if code != '00000': 
             raise ApiError(f"Bitget returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bitget.futures.market.get_candlestick_data')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get candlestick data from Bitget: %s', e); raise
+    rate_limiter.acquire('bitget.futures.market.get_candlestick_data')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_next_funding_time(symbol, product_type, *, headers={}, **kwargs):
     """ 
@@ -121,7 +120,7 @@ def get_next_funding_time(symbol, product_type, *, headers={}, **kwargs):
         symbol (str): Trading pair.
         product_type (str): Product type: USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -152,10 +151,9 @@ def get_next_funding_time(symbol, product_type, *, headers={}, **kwargs):
         if code != '00000': 
             raise ApiError(f"Bitget returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bitget.futures.market.get_next_funding_time')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get next funding time from Bitget: %s', e); raise
+    rate_limiter.acquire('bitget.futures.market.get_next_funding_time')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_historical_funding_rates(symbol, product_type, params={}, *, headers={}, **kwargs):
     """ 
@@ -170,7 +168,7 @@ def get_historical_funding_rates(symbol, product_type, params={}, *, headers={},
             pageSize (int): Number of queries: Default: 20, maximum: 100.
             pageNo (int): Page number.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -203,10 +201,9 @@ def get_historical_funding_rates(symbol, product_type, params={}, *, headers={},
         if code != '00000': 
             raise ApiError(f"Bitget returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bitget.futures.market.get_historical_funding_rates')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get historical funding rates from Bitget: %s', e); raise
+    rate_limiter.acquire('bitget.futures.market.get_historical_funding_rates')  
+    return execute_request(send, read, check, kwargs)
+
 
 def get_current_funding_rate(product_type, params={}, *, headers={}, **kwargs):
     """ 
@@ -219,7 +216,7 @@ def get_current_funding_rate(product_type, params={}, *, headers={}, **kwargs):
         params (dict):
             symbol (str): Trading pair.
         headers (dict): HTTP headers.
-        kwargs (dict): 
+        kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
             timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
@@ -251,7 +248,5 @@ def get_current_funding_rate(product_type, params={}, *, headers={}, **kwargs):
         if code != '00000': 
             raise ApiError(f"Bitget returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    try:
-        rate_limiter.acquire('bitget.futures.market.get_current_funding_rate')  
-        return execute_request(send, read, check, kwargs)
-    except Exception as e: logger.error('Failed to get current funding rate from Bitget: %s', e); raise
+    rate_limiter.acquire('bitget.futures.market.get_current_funding_rate')  
+    return execute_request(send, read, check, kwargs)
