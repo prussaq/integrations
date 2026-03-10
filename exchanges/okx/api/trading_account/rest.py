@@ -115,6 +115,70 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
+def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
+    """ 
+    Retrieve the bills of the account. The bill refers to all transaction records 
+    that result in changing the balance of an account. Pagination is supported, 
+    and the response is sorted with the most recent first. 
+    This endpoint can retrieve data from the last 7 days.
+
+    Link: 
+        https://www.okx.com/docs-v5/en/#trading-account-rest-api-get-bills-details-last-7-days
+    Args:
+        api (dict): API credentials. See `sign_headers` api parameter.
+        params (dict):
+            instType (str): Instrument type: SPOT, MARGIN, SWAP, FUTURES, OPTION
+            instId (str): Instrument ID, e.g. BTC-USDT-SWAP. 
+            ccy (str): Bill currency
+            mgnMode (str): Margin mode: isolated, cross
+            ctType (str): Contract type: linear, inverse. Only applicable to FUTURES/SWAP
+            type (str): Bill type
+            subType (str): Bill subtype
+            after (str): Pagination of data to return records earlier than the requested bill ID.
+            before (str): Pagination of data to return records newer than the requested bill ID.
+            begin (str): Filter with a begin timestamp ts. Unix timestamp format in milliseconds, e.g. 1597026383085
+            end (str): Filter with an end timestamp ts. Unix timestamp format in milliseconds, e.g. 1597026383085
+            limit (str): Number of results per request. The maximum is 100. The default is 100.
+        headers (dict): HTTP headers.
+        kwargs:
+            session (requests.Session): Must be managed by caller.
+            base_url (str): Base HTTP endpoint for the exchange API.
+            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
+            retries (int): Number of retry attempts.
+            delay (float): Initial retry delay in seconds.
+            backoff (float): Retry backoff multiplier.
+            full (bool): If True, return both the parsed response body and the HTTP response object.
+    Returns:
+        dict: Parsed response body by default.
+        (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
+    Raises:
+        RequestFailed: If the request fails due to a transport- or protocol-level failure.
+        ApiError: If the response is semantically invalid or indicates an API-level error.
+        Exception: Propagates any other unexpected exceptions.
+    Notes: 
+        Makes HTTP request by `requests` or `requests.Session` if provided.
+    """
+    http = kwargs.get('session', requests)
+    base_url = kwargs.get('base_url', okx.BASE_URL)
+    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    method = 'GET'
+    endpoint = '/api/v5/account/bills'+ (f"?{urlencode(params)}" if params else '')
+    url = base_url + endpoint
+
+    def send(): 
+        okx.sign_headers(headers, api, method, endpoint)
+        return http.get(url, headers=headers, timeout=timeout)
+    def read(response): return response.json()
+    def check(response, body):
+        if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
+        code = body.get('code')
+        if code != '0': 
+            raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
+
+    rate_limiter.acquire('okx.api.trading_account.rest.get_bills_details_7d') 
+    return execute_request(send, read, check, kwargs)
+
+
 def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
     """ 
     There are 10 different scenarios for leverage setting: see docs at `Link`
