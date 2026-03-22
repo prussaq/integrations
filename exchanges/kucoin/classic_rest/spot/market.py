@@ -1,6 +1,5 @@
 import logging
 import requests
-from urllib.parse import urlencode
 
 from integrations.shared import rate_limiter
 from integrations.shared.exceptions import ApiError

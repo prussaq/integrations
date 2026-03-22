@@ -150,7 +150,7 @@ def get_klines(symbol, granularity, params={}, *, headers={}, **kwargs):
         https://www.kucoin.com/docs-new/rest/futures-trading/market-data/get-klines
     Args:
         symbol (str): Symbol of the contract.
-        granularity: Candlestick type (minutes): 1, 5, 15, 30, 60, 120, 240, 480, 720, 1440, 10080
+        granularity (int): Candlestick type (minutes): 1, 5, 15, 30, 60, 120, 240, 480, 720, 1440, 10080
         params (dict):
             from (int): Start time (milliseconds)
             to (int): End time (milliseconds)
