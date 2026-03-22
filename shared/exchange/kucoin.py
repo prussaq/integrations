@@ -6,6 +6,8 @@ import base64
 TIMEOUT = (5, 10)
 
 FUTURES_BASE_URL = 'https://api-futures.kucoin.com'
+SPOT_BASE_URL = 'https://api.kucoin.com'
+
 
 def sign_headers(headers, api, method, endpoint, body=''):
     """
