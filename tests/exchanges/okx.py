@@ -18,12 +18,14 @@ api = get_api(secrets, config.OKX_API_PATH)
 
 # data = public_data.get_instruments('SWAP', {'instId': 'OP-USDT-SWAP'})
 # data = public_data.get_funding_rate('OP-USDT-SWAP')
-data = market_data.get_ticker('OP-USDT-SWAP')
+# data = market_data.get_ticker('OP-USDT-SWAP')
 # data = public_data.get_funding_rate_history('OP-USDT-SWAP', {'limit': 10})
 # data = public_data.get_mark_price('SWAP', {'instId': 'OP-USDT-SWAP'})
 # data = trading_account.get_positions(api, {'instType': 'SWAP', 'instId': 'OP-USDT-SWAP'})
 # data = trading_account.get_balance(api, {'ccy': 'USDT'})
 # data = trading_account.get_balance(api)
 # data = trading_account.set_leverage(api, '4', 'isolated', {'instId': 'OP-USDT-SWAP'})
+data = public_data.get_mark_price_candlesticks('OP-USDT-SWAP')
+
 
 print('data:', data)
