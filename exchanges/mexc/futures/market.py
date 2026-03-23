@@ -234,3 +234,49 @@ def get_ticker(params={}, *, headers={}, **kwargs):
 
     rate_limiter.acquire('mexc.futures.market.get_ticker') 
     return execute_request(send, read, check, kwargs)
+
+
+def get_funding_rate_history(symbol, page_num=1, page_size=20, *, headers={}, **kwargs):
+    """ 
+    Get funding rate history.
+
+    Link: 
+        https://www.mexc.com/api-docs/futures/market-endpoints#get-funding-rate-history
+    Args:
+        symbol (str): Contract symbol.
+        page_num (int): Current page, default 1
+        page_size (int): Page size, default 20, max 1000
+        headers (dict): HTTP headers.
+        kwargs:
+            session (requests.Session): Must be managed by caller.
+            base_url (str): Base HTTP endpoint for the exchange API.
+            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
+            retries (int): Number of retry attempts.
+            delay (float): Initial retry delay in seconds.
+            backoff (float): Retry backoff multiplier.
+            full (bool): If True, return both the parsed response body and the HTTP response object.
+    Returns:
+        dict: Parsed response body by default.
+        (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
+    Raises:
+        RequestFailed: If the request fails due to a transport- or protocol-level failure.
+        ApiError: If the response is semantically invalid or indicates an API-level error.
+        Exception: Propagates any other unexpected exceptions.
+    Notes: 
+        Makes HTTP request by `requests` or `requests.Session` if provided.
+    """
+    http = kwargs.get('session', requests)
+    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    url = f"{base_url}/api/v1/contract/funding_rate/history?symbol={symbol}&page_num={page_num}&page_size={page_size}"
+
+    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def read(response): return response.json()
+    def check(response, body):
+        if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
+        if not body.get('success'): 
+            raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
+                response=response, body=body)
+
+    rate_limiter.acquire('mexc.futures.market.get_funding_rate_history') 
+    return execute_request(send, read, check, kwargs)
