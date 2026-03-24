@@ -115,6 +115,71 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
+def get_positions_history(api, params={}, *, headers={}, **kwargs):
+    """ 
+    Retrieve the updated position data for the last 3 months. 
+    Return in reverse chronological order using utime. 
+    Getting positions history is supported under Portfolio margin mode since 04:00 AM (UTC) on November 11, 2024.
+
+    Link: 
+        https://www.okx.com/docs-v5/en/#trading-account-rest-api-get-positions-history
+    Args:
+        api (dict): API credentials. See `sign_headers` api parameter.
+        params (dict):
+            instType (str): Instrument type: MARGIN, SWAP, FUTURES, OPTION
+            instId (str): Instrument ID, e.g. BTC-USDT-SWAP. 
+            mgnMode (str): Margin mode: cross, isolated
+            type (str): The type of latest close position. 
+                1: Close position partially; 2：Close all; 3：Liquidation; 4：Partial liquidation; 
+                5：ADL - position not fully closed; 6：ADL - position fully closed
+                It is the latest type if there are several types for the same position.
+            posId (str): Position ID. There is attribute expiration. 
+                The posId will be expired if it is more than 30 days after the last full close position, 
+                then position will use new posId.
+            after (str): Pagination of data to return records earlier than the requested uTime, Unix timestamp format in milliseconds, e.g. 1597026383085
+            before (str): Pagination of data to return records newer than the requested uTime, Unix timestamp format in milliseconds, e.g. 1597026383085
+            limit (str): Number of results per request. The maximum is 100. The default is 100. 
+                All records that have the same uTime will be returned at the current request
+        headers (dict): HTTP headers.
+        kwargs:
+            session (requests.Session): Must be managed by caller.
+            base_url (str): Base HTTP endpoint for the exchange API.
+            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
+            retries (int): Number of retry attempts.
+            delay (float): Initial retry delay in seconds.
+            backoff (float): Retry backoff multiplier.
+            full (bool): If True, return both the parsed response body and the HTTP response object.
+    Returns:
+        dict: Parsed response body by default.
+        (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
+    Raises:
+        RequestFailed: If the request fails due to a transport- or protocol-level failure.
+        ApiError: If the response is semantically invalid or indicates an API-level error.
+        Exception: Propagates any other unexpected exceptions.
+    Notes: 
+        Makes HTTP request by `requests` or `requests.Session` if provided.
+    """
+    http = kwargs.get('session', requests)
+    base_url = kwargs.get('base_url', okx.BASE_URL)
+    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    method = 'GET'
+    endpoint = '/api/v5/account/positions-history'+ (f"?{urlencode(params)}" if params else '')
+    url = base_url + endpoint
+
+    def send(): 
+        okx.sign_headers(headers, api, method, endpoint)
+        return http.get(url, headers=headers, timeout=timeout)
+    def read(response): return response.json()
+    def check(response, body):
+        if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
+        code = body.get('code')
+        if code != '0': 
+            raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
+
+    rate_limiter.acquire('okx.api.trading_account.rest.get_positions_history') 
+    return execute_request(send, read, check, kwargs)
+
+
 def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
     """ 
     Retrieve the bills of the account. The bill refers to all transaction records 
