@@ -25,7 +25,8 @@ api = get_api(secrets, config.OKX_API_PATH)
 # data = trading_account.get_balance(api, {'ccy': 'USDT'})
 # data = trading_account.get_balance(api)
 # data = trading_account.set_leverage(api, '4', 'isolated', {'instId': 'OP-USDT-SWAP'})
-data = public_data.get_mark_price_candlesticks('OP-USDT-SWAP')
+# data = public_data.get_mark_price_candlesticks('OP-USDT-SWAP')
+data = trading_account.get_positions_history(api, {'instId': 'ETH-USDT-SWAP'})
 
 
 print('data:', data)
