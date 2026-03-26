@@ -20,7 +20,8 @@ api = get_api(secrets, config.MEXC_API_PATH)
 # data = account_trading.get_currency_asset(api, 'USDT')
 # data = account_trading.get_account_assets(api)
 # data = account_trading.get_open_positions(api)
-data = account_trading.get_funding_fee_details(api)
+# data = account_trading.get_funding_fee_details(api)
+data = market.get_funding_rate_history('BTC_USDT')
 
 
 print('data:', data)
