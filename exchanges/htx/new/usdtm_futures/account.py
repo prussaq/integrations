@@ -219,9 +219,9 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, *, headers=
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
-        status = body.get('status')
-        if status != 'ok': 
-            raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
+        code = body.get('code')
+        if code != 200: 
+            raise ApiError(f"HTX returned {code}: {body.get('msg')}", 
                 response=response, body=body)
 
     rate_limiter.acquire('htx.new.usdtm_futures.account.query_account_financial_records_isolated') 
