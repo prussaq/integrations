@@ -9,7 +9,7 @@ import integrations.shared.exchange.binance as binance
 logger = logging.getLogger(__name__)
 
 
-def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
+def get_kline(symbol, interval, params={}, **kwargs):
     """ 
     Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
     
@@ -23,7 +23,6 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
             endTime (long): The end timestamp (ms).
             timeZone (str): Default: 0 (UTC)
             limit (int): Default: 500; Maximum: 1000.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -42,6 +41,7 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', binance.SPOT_PUBLIC_MARKET_DATA_BASE_URL)
     timeout = kwargs.get('timeout', binance.TIMEOUT)

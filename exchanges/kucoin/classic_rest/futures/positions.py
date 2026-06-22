@@ -11,7 +11,7 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def get_position_details(api, symbol, *, headers={}, **kwargs):
+def get_position_details(api, symbol, **kwargs):
     """ 
     Get position details by symbol.
 
@@ -20,7 +20,6 @@ def get_position_details(api, symbol, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         symbol (str): Symbol of the contract.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -39,6 +38,7 @@ def get_position_details(api, symbol, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -60,7 +60,7 @@ def get_position_details(api, symbol, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_position_list(api, params={}, *, headers={}, **kwargs):
+def get_position_list(api, params={}, **kwargs):
     """ 
     Get position list by currency.
 
@@ -70,7 +70,6 @@ def get_position_list(api, params={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         params (dict):
             currency (str): Currency name, e.g. USDT, XBT. Default: All
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -89,6 +88,7 @@ def get_position_list(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -110,7 +110,7 @@ def get_position_list(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_positions_history(api, params={}, *, headers={}, **kwargs):
+def get_positions_history(api, params={}, **kwargs):
     """ 
     Get positions history.
 
@@ -124,7 +124,6 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
             to (int): Closing end time(ms)
             limit (int): Number of requests per page, max 200, default 10
             pageId (int): Current page number, default 1
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -143,6 +142,7 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -164,7 +164,7 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def add_isolated_margin(api, data, *, headers={}, **kwargs):
+def add_isolated_margin(api, data, **kwargs):
     """ 
     Add isolated margin.
 
@@ -173,7 +173,6 @@ def add_isolated_margin(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -189,6 +188,7 @@ def add_isolated_margin(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -212,7 +212,7 @@ def add_isolated_margin(api, data, *, headers={}, **kwargs):
     return execute_request(send, read, check, retries=1)
 
 
-def remove_isolated_margin(api, data, *, headers={}, **kwargs):
+def remove_isolated_margin(api, data, **kwargs):
     """ 
     Remove isolated margin.
 
@@ -221,7 +221,6 @@ def remove_isolated_margin(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -237,6 +236,7 @@ def remove_isolated_margin(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)

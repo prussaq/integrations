@@ -10,7 +10,7 @@ import integrations.shared.exchange.okx as okx
 logger = logging.getLogger(__name__)
 
 
-def get_instruments(inst_type, params={}, *, headers={}, **kwargs):
+def get_instruments(inst_type, params={}, **kwargs):
     """ 
     Retrieve a list of instruments with open contracts for OKX.
 
@@ -22,7 +22,6 @@ def get_instruments(inst_type, params={}, *, headers={}, **kwargs):
             instFamily (str): Instrument family. Applicable to FUTURES/SWAP/OPTION. 
                 If instType is OPTION, instFamily is required.
             instId (str): Instrument ID.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -59,7 +58,7 @@ def get_instruments(inst_type, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate(inst_id, *, headers={}, **kwargs):
+def get_funding_rate(inst_id, **kwargs):
     """ 
     Retrieve funding rate. Only applicable to SWAP.
 
@@ -67,7 +66,6 @@ def get_funding_rate(inst_id, *, headers={}, **kwargs):
         https://www.okx.com/docs-v5/en/#public-data-rest-api-get-funding-rate
     Args:
         inst_id (str): Instrument ID, e.g. BTC-USD-SWAP, or ANY to return the funding rate of all swap symbols.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -86,6 +84,7 @@ def get_funding_rate(inst_id, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
@@ -103,7 +102,7 @@ def get_funding_rate(inst_id, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_history(inst_id, params={}, *, headers={}, **kwargs):
+def get_funding_rate_history(inst_id, params={}, **kwargs):
     """ 
     Retrieve funding rate history up to three months. Only applicable to SWAP.
 
@@ -115,7 +114,6 @@ def get_funding_rate_history(inst_id, params={}, *, headers={}, **kwargs):
             before (str): Pagination of data to return records newer than the requested fundingTime
             after (str): Pagination of data to return records earlier than the requested fundingTime
             limit (str): Number of results per request. The maximum is 400; The default is 400
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -134,6 +132,7 @@ def get_funding_rate_history(inst_id, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
@@ -152,7 +151,7 @@ def get_funding_rate_history(inst_id, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_mark_price(inst_type, params={}, *, headers={}, **kwargs):
+def get_mark_price(inst_type, params={}, **kwargs):
     """ 
     Retrieve mark price.
 
@@ -163,7 +162,6 @@ def get_mark_price(inst_type, params={}, *, headers={}, **kwargs):
         params (dict):
             instFamily (str): Instrument family. Applicable to FUTURES/SWAP/OPTION
             instId (str): Instrument ID, e.g. BTC-USD-SWAP
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -182,6 +180,7 @@ def get_mark_price(inst_type, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
@@ -200,7 +199,7 @@ def get_mark_price(inst_type, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_mark_price_candlesticks(instId, params={}, *, headers={}, **kwargs):
+def get_mark_price_candlesticks(instId, params={}, **kwargs):
     """ 
     Retrieve the candlestick charts of mark price. This endpoint can retrieve the latest 1,440 data entries. 
     Charts are returned in groups based on the requested bar.
@@ -217,7 +216,6 @@ def get_mark_price_candlesticks(instId, params={}, *, headers={}, **kwargs):
                 UTC+8 opening price k-line: [6H/12H/1D/1W/1M/3M]
                 UTC+0 opening price k-line: [6Hutc/12Hutc/1Dutc/1Wutc/1Mutc/3Mutc]
             limit (str): Number of results per request. The maximum is 100; The default is 100
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -236,6 +234,7 @@ def get_mark_price_candlesticks(instId, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)

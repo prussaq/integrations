@@ -9,7 +9,7 @@ import integrations.shared.exchange.dydx as dydx
 logger = logging.getLogger(__name__)
 
 
-def get_perpetual_markets(params={}, *, headers={}, **kwargs):
+def get_perpetual_markets(params={}, **kwargs):
     """ 
     Retrieves perpetual markets..
 
@@ -19,7 +19,6 @@ def get_perpetual_markets(params={}, *, headers={}, **kwargs):
         params (dict):
             market (str): The specific market ticker to retrieve. If not provided, all markets are returned.
             limit (int): Maximum number of asset positions to return in the response.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -38,6 +37,7 @@ def get_perpetual_markets(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', dydx.INDEXER_MAINNET_HTTP)
     timeout = kwargs.get('timeout', dydx.TIMEOUT)
@@ -52,7 +52,7 @@ def get_perpetual_markets(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
+def get_candles(market, resolution, params={}, **kwargs):
     """ 
     Retrieves candle data for a specific perpetual market.
 
@@ -65,7 +65,6 @@ def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
             limit (int): The maximum number of candles to retrieve.
             fromISO (str): The start timestamp in ISO format.
             toISO (str): The end timestamp in ISO format.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -84,6 +83,7 @@ def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', dydx.INDEXER_MAINNET_HTTP)
     timeout = kwargs.get('timeout', dydx.TIMEOUT)

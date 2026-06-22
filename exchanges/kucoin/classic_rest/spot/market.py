@@ -9,7 +9,7 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def get_symbol(symbol, *, headers={}, **kwargs):
+def get_symbol(symbol, **kwargs):
     """ 
     Request via this endpoint to get detail currency pairs for trading.
 
@@ -17,7 +17,6 @@ def get_symbol(symbol, *, headers={}, **kwargs):
         https://www.kucoin.com/docs-new/rest/spot-trading/market-data/get-symbol
     Args:
         symbol (str): Symbol. Example: BTC-USDT
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -36,6 +35,7 @@ def get_symbol(symbol, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -53,7 +53,7 @@ def get_symbol(symbol, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_all_symbols(params={}, *, headers={}, **kwargs):
+def get_all_symbols(params={}, **kwargs):
     """ 
     Request a list of available currency pairs for trading via this endpoint.
 
@@ -62,7 +62,6 @@ def get_all_symbols(params={}, *, headers={}, **kwargs):
     Args:
         params (dict):
             market (str): The trading market. Examples: ALTS, USDS, ETF
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -81,6 +80,7 @@ def get_all_symbols(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -98,7 +98,7 @@ def get_all_symbols(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_klines(symbol, type, params={}, *, headers={}, **kwargs):
+def get_klines(symbol, type, params={}, **kwargs):
     """ 
     Get the Kline of the symbol. Data are returned in grouped buckets based on requested type.
     For each query, the system would return at most 1500 pieces of data. To obtain more data, please page the data by time.
@@ -112,7 +112,6 @@ def get_klines(symbol, type, params={}, *, headers={}, **kwargs):
         params (dict):
             startAt (int): Start time (second), default is 0
             endAt (int): End time (second), default is 0
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -131,6 +130,7 @@ def get_klines(symbol, type, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)

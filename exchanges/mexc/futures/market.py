@@ -10,7 +10,7 @@ import integrations.shared.exchange.mexc as mexc
 logger = logging.getLogger(__name__)
 
 
-def get_contract_info(params={}, *, headers={}, **kwargs):
+def get_contract_info(params={}, **kwargs):
     """ 
     Get information about all contracts or specified one.
 
@@ -19,7 +19,6 @@ def get_contract_info(params={}, *, headers={}, **kwargs):
     Args:
         params (dict):
             symbol (str): Symbol of the contract.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -38,6 +37,7 @@ def get_contract_info(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -55,7 +55,7 @@ def get_contract_info(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_index_price(symbol, *, headers={}, **kwargs):
+def get_index_price(symbol, **kwargs):
     """ 
     Get index price of the contract.
 
@@ -63,7 +63,6 @@ def get_index_price(symbol, *, headers={}, **kwargs):
         https://www.mexc.com/api-docs/futures/market-endpoints#get-index-price
     Args:
         symbol (str): Symbol of the contract.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -82,6 +81,7 @@ def get_index_price(symbol, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -99,7 +99,7 @@ def get_index_price(symbol, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate(symbol, *, headers={}, **kwargs):
+def get_funding_rate(symbol, **kwargs):
     """ 
     Get funding rate of the contract.
 
@@ -107,7 +107,6 @@ def get_funding_rate(symbol, *, headers={}, **kwargs):
         https://www.mexc.com/api-docs/futures/market-endpoints#get-funding-rate
     Args:
         symbol (str): Symbol of the contract.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -126,6 +125,7 @@ def get_funding_rate(symbol, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -143,7 +143,7 @@ def get_funding_rate(symbol, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_candlestick_data(symbol, params={}, *, headers={}, **kwargs):
+def get_candlestick_data(symbol, params={}, **kwargs):
     """ 
     Get candlestick data of the contract. Max 2000 entries. Default interval Min1.
 
@@ -155,7 +155,6 @@ def get_candlestick_data(symbol, params={}, *, headers={}, **kwargs):
             interval (str): Min1, Min5, Min15, Min30, Min60, Hour4, Hour8, Day1, Week1, Month1
             start (int): Start timestamp (seconds).
             end (int): End timestamp (seconds).
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -174,6 +173,7 @@ def get_candlestick_data(symbol, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -191,7 +191,7 @@ def get_candlestick_data(symbol, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_ticker(params={}, *, headers={}, **kwargs):
+def get_ticker(params={}, **kwargs):
     """ 
     Get ticker for all contracts or specified one.
 
@@ -200,7 +200,6 @@ def get_ticker(params={}, *, headers={}, **kwargs):
     Args:
         params (dict):
             symbol (str): Symbol of the contract.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -219,6 +218,7 @@ def get_ticker(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -236,7 +236,7 @@ def get_ticker(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_history(symbol, page_num=1, page_size=20, *, headers={}, **kwargs):
+def get_funding_rate_history(symbol, page_num=1, page_size=20, **kwargs):
     """ 
     Get funding rate history.
 
@@ -246,7 +246,6 @@ def get_funding_rate_history(symbol, page_num=1, page_size=20, *, headers={}, **
         symbol (str): Contract symbol.
         page_num (int): Current page, default 1
         page_size (int): Page size, default 20, max 1000
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -265,6 +264,7 @@ def get_funding_rate_history(symbol, page_num=1, page_size=20, *, headers={}, **
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)

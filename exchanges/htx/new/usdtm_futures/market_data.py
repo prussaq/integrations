@@ -9,7 +9,7 @@ import integrations.shared.exchange.htx as htx
 logger = logging.getLogger(__name__)
 
 
-def get_market_depth(contract_code, type, *, headers={}, **kwargs):
+def get_market_depth(contract_code, type, **kwargs):
     """ 
     Get market depth.
 
@@ -18,7 +18,6 @@ def get_market_depth(contract_code, type, *, headers={}, **kwargs):
     Args:
         contract_code (str): Contract code or contract type , e.g. BTC-USDT, BTC-USDT-220325, BTC-USDT-CW.
         type (str): Get depth data within step 150, use step0, step1, step2, step3...
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -37,6 +36,7 @@ def get_market_depth(contract_code, type, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -55,7 +55,7 @@ def get_market_depth(contract_code, type, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_market_BBO_data(params={}, *, headers={}, **kwargs):
+def get_market_BBO_data(params={}, **kwargs):
     """ 
     Get market BBO data.
 
@@ -67,7 +67,6 @@ def get_market_BBO_data(params={}, *, headers={}, **kwargs):
         params (dict):
             contract_code (str): Contract code or contract type , e.g. BTC-USDT, BTC-USDT-220325, BTC-USDT-CW.
             business_type (str): Business type: futures, swap, all. Default is swap.  
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -86,6 +85,7 @@ def get_market_BBO_data(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -104,7 +104,7 @@ def get_market_BBO_data(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_kline_data(contract_code, period, params, *, headers={}, **kwargs):
+def get_kline_data(contract_code, period, params, **kwargs):
     """ 
     Get kline data for up to the last two years.
 
@@ -120,7 +120,6 @@ def get_kline_data(contract_code, period, params, *, headers={}, **kwargs):
             size (int): Acquisition quantity (1, 2000); defaults to 150.
             from (long): Start timestamp (seconds).
             to (long): End timestamp (seconds).
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -139,6 +138,7 @@ def get_kline_data(contract_code, period, params, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -159,7 +159,7 @@ def get_kline_data(contract_code, period, params, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_last_trade(params={}, *, headers={}, **kwargs):
+def get_last_trade(params={}, **kwargs):
     """ 
     Query the last trade of a contract.
 
@@ -173,7 +173,6 @@ def get_last_trade(params={}, *, headers={}, **kwargs):
         params (dict):
             contract_code (str): Contract code or contract type , e.g. BTC-USDT, BTC-USDT-220325, BTC-USDT-CW.
             business_type (str): Business type: futures, swap, all. Default is swap.  
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -192,6 +191,7 @@ def get_last_trade(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)

@@ -9,7 +9,7 @@ import integrations.shared.exchange.htx as htx
 logger = logging.getLogger(__name__)
 
 
-def query_asset_valuation(api, asset, *, headers={}, **kwargs):
+def query_asset_valuation(api, asset, **kwargs):
     """ 
     Query asset valuation (balance).
 
@@ -18,7 +18,6 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_params` api parameter.
         asset (str): The valuation according to the certain fiat currency; defaults to BTC.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -37,6 +36,7 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -62,7 +62,7 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
+def query_account_info_isolated(api, data={}, **kwargs):
     """ 
     Query user’s account information (isolated).
 
@@ -72,7 +72,6 @@ def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_params` api parameter.
         data (dict): 
             contract_code (str): Contract code (case-insensitive), e.g. BTC-USDT.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -91,6 +90,7 @@ def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -115,7 +115,7 @@ def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
+def query_position_info_isolated(api, data={}, **kwargs):
     """ 
     Query user’s position information (isolated).
 
@@ -125,7 +125,6 @@ def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_params` api parameter.
         data (dict): 
             contract_code (str): Contract code (case-insensitive), e.g. BTC-USDT.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -144,6 +143,7 @@ def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -168,7 +168,7 @@ def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_account_financial_records_isolated(api, mar_acct, data={}, *, headers={}, **kwargs):
+def query_account_financial_records_isolated(api, mar_acct, data={}, **kwargs):
     """ 
     Query account financial records (isolated) (New).
 
@@ -184,7 +184,6 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, *, headers=
             end_time (long): Query end time, query data by creation time.
             direct (str): Search direct.
             from_id (long): Search query_id to begin with.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -203,6 +202,7 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, *, headers=
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)

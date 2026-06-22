@@ -10,7 +10,7 @@ import integrations.shared.exchange.bitget as bitget
 logger = logging.getLogger(__name__)
 
 
-def get_single_position(api, symbol, product_type, margin_coin, *, headers={}, **kwargs):
+def get_single_position(api, symbol, product_type, margin_coin, **kwargs):
     """ 
     Returns position information of a single symbol, response including estimated liquidation price.
 
@@ -21,7 +21,6 @@ def get_single_position(api, symbol, product_type, margin_coin, *, headers={}, *
         symbol (str): Trading pair, e.g. BTCUSDT
         product_type (str): Product type: USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
         margin_coin (str): Margin coin, capitalized, e.g. USDT
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -40,6 +39,7 @@ def get_single_position(api, symbol, product_type, margin_coin, *, headers={}, *
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
     timeout = kwargs.get('timeout', bitget.TIMEOUT)

@@ -9,14 +9,13 @@ import integrations.shared.exchange.binance as binance
 logger = logging.getLogger(__name__)
 
 
-def get_exchange_info(*, headers={}, **kwargs):
+def get_exchange_info(**kwargs):
     """ 
     Current exchange trading rules and symbol information.
 
     Link: 
         https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information
     Args:
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -35,6 +34,7 @@ def get_exchange_info(*, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', binance.TIMEOUT)
@@ -51,7 +51,7 @@ def get_exchange_info(*, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
+def get_kline(symbol, interval, params={}, **kwargs):
     """ 
     Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
 
@@ -67,7 +67,6 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
             startTime (long): The start timestamp (ms).
             endTime (long): The end timestamp (ms).
             limit (int): Default 500; max 1500.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -86,6 +85,7 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', binance.TIMEOUT)
@@ -104,7 +104,7 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_history(params={}, *, headers={}, **kwargs):
+def get_funding_rate_history(params={}, **kwargs):
     """ 
     Get funding rate history.
 
@@ -120,7 +120,6 @@ def get_funding_rate_history(params={}, *, headers={}, **kwargs):
             startTime (long): Timestamp in ms to get funding rate from INCLUSIVE.
             endTime (long): Timestamp in ms to get funding rate until INCLUSIVE.
             limit (int): Default 100; max 1000
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -139,6 +138,7 @@ def get_funding_rate_history(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', binance.TIMEOUT)
@@ -155,14 +155,13 @@ def get_funding_rate_history(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_info(*, headers={}, **kwargs):
+def get_funding_rate_info(**kwargs):
     """ 
     Query funding rate info for symbols that had FundingRateCap/ FundingRateFloor / fundingIntervalHours adjustment.
 
     Link: 
         https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-Info
     Args:
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -181,6 +180,7 @@ def get_funding_rate_info(*, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', binance.TIMEOUT)
@@ -197,7 +197,7 @@ def get_funding_rate_info(*, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_price_ticker_v2(params={}, *, headers={}, **kwargs):
+def get_price_ticker_v2(params={}, **kwargs):
     """ 
     Get latest price for a symbol or symbols.
 
@@ -208,7 +208,6 @@ def get_price_ticker_v2(params={}, *, headers={}, **kwargs):
     Args:
         params (dict): 
             symbol (str): Symbol name.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -227,6 +226,7 @@ def get_price_ticker_v2(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', binance.TIMEOUT)

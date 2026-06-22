@@ -11,7 +11,7 @@ import integrations.shared.exchange.bybit as bybit
 logger = logging.getLogger(__name__)
 
 
-def get_position_info(api, category, params={}, *, headers={}, **kwargs):
+def get_position_info(api, category, params={}, **kwargs):
     """ 
     Query real-time position data, such as position size, cumulative realized PNL, etc.
 
@@ -27,8 +27,6 @@ def get_position_info(api, category, params={}, *, headers={}, **kwargs):
             settleCoin (str): Settle coin. 
             limit (int): Limit for data size per page. [1, 200]. Default: 20
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set.
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -47,6 +45,7 @@ def get_position_info(api, category, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
@@ -69,7 +68,7 @@ def get_position_info(api, category, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def set_leverage(api, category, symbol, *, buy, sell, headers={}, **kwargs):
+def set_leverage(api, category, symbol, *, buy, sell, **kwargs):
     """
     Set leverage.
     Buy and sell leverage must be identical in both one-way mode and hedge mode when using cross margin.
@@ -82,8 +81,6 @@ def set_leverage(api, category, symbol, *, buy, sell, headers={}, **kwargs):
         symbol (str): Symbol name, like BTCUSDT, uppercase only.
         buy (str): Buy leverage.
         sell (str): Sell leverage.
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -102,6 +99,7 @@ def set_leverage(api, category, symbol, *, buy, sell, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
@@ -124,7 +122,7 @@ def set_leverage(api, category, symbol, *, buy, sell, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def set_trading_stop(api, data, *, headers={}, **kwargs):
+def set_trading_stop(api, data, **kwargs):
     """
     Set the take profit, stop loss or trailing stop for the position.
 
@@ -133,8 +131,6 @@ def set_trading_stop(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -150,6 +146,7 @@ def set_trading_stop(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
@@ -172,7 +169,7 @@ def set_trading_stop(api, data, *, headers={}, **kwargs):
     return execute_request(send, read, check, retries=1)
 
 
-def get_closed_PnL(api, category, params={}, *, headers={}, **kwargs):
+def get_closed_PnL(api, category, params={}, **kwargs):
     """ 
     Query user's closed profit and loss records.
 
@@ -192,8 +189,6 @@ def get_closed_PnL(api, category, params={}, *, headers={}, **kwargs):
             endTime (int): The end timestamp (ms).
             limit (int): Limit for data size per page. [1, 200]. Default: 50
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set.
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -212,6 +207,7 @@ def get_closed_PnL(api, category, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)

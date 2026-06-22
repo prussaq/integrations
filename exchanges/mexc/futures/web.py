@@ -15,7 +15,8 @@ FUTURES_BASE_URL = 'https://futures.mexc.com'
 logger = logging.getLogger(__name__)
 
 
-def sign_headers(headers, api, data):
+def sign_headers(api, data={}):
+    headers = {}
     def gen_signature(timestamp, data):
         def md5(value): return hashlib.md5(value.encode('utf-8')).hexdigest()
         g = md5(api['uid'] + timestamp)[7:]
@@ -27,6 +28,7 @@ def sign_headers(headers, api, data):
     headers['x-mxc-nonce'] = timestamp
     headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
     headers['Authorization'] = api['uid']
+    return headers
 
 
 def get_account_assets(api, **kwargs):
@@ -58,7 +60,7 @@ def get_account_assets(api, **kwargs):
     timeout = kwargs.get('timeout', TIMEOUT)
 
     def send(): 
-        sign_headers(headers, api)
+        headers.update(sign_headers(api))
         return cffi_requests.get(url, headers=headers, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
@@ -99,7 +101,7 @@ def place_order(api, data, **kwargs):
     timeout = kwargs.get('timeout', TIMEOUT)
 
     rate_limiter.acquire('mexc.futures.web.place_order') 
-    sign_headers(headers, api, data)
+    headers.update(sign_headers(api, data))
     response = cffi_requests.post(url, headers=headers, json=data, timeout=timeout)
     body = response.json()
     if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -137,7 +139,7 @@ def place_TP_SL_order(api, data, **kwargs):
     timeout = kwargs.get('timeout', TIMEOUT)
 
     def send(): 
-        sign_headers(headers, api, data)
+        headers.update(sign_headers(api, data))
         return cffi_requests.get(url, headers=headers, json=data, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):

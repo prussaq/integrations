@@ -9,7 +9,7 @@ import integrations.shared.exchange.htx as htx
 logger = logging.getLogger(__name__)
 
 
-def query_unified_account_assets(api, params={}, *, headers={}, **kwargs):
+def query_unified_account_assets(api, params={}, **kwargs):
     """ 
     Query unified account assets (positions).
 
@@ -19,7 +19,6 @@ def query_unified_account_assets(api, params={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_params` api parameter.
         params (dict): 
             contract_code (str): Contract code; defaults to all.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -38,6 +37,7 @@ def query_unified_account_assets(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
