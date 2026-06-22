@@ -10,7 +10,7 @@ import integrations.shared.exchange.bybit as bybit
 logger = logging.getLogger(__name__)
 
 
-def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
+def get_transferable_amount_unified(api, coin, **kwargs):
     """ 
     Query the available amount to transfer of a specific coin in the Unified wallet.
 
@@ -20,8 +20,6 @@ def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         coin (str): Coin name, uppercase only.
             Supports up to 20 coins per request, use comma to separate: BTC,USDC,USDT,SOL
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -40,6 +38,7 @@ def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
@@ -62,7 +61,7 @@ def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_transaction_log(api, params={}, *, headers={}, **kwargs):
+def get_transaction_log(api, params={}, **kwargs):
     """ 
     Query for transaction logs in your Unified account. It supports up to 2 years worth of data.
 
@@ -86,8 +85,6 @@ def get_transaction_log(api, params={}, *, headers={}, **kwargs):
             endTime (int): The end timestamp (ms)
             limit (int): Limit for data size per page. [1, 50]. Default: 20
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -106,6 +103,7 @@ def get_transaction_log(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
@@ -127,7 +125,7 @@ def get_transaction_log(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_account_info(api, *, headers={}, **kwargs):
+def get_account_info(api, **kwargs):
     """ 
     Query the account information, like margin mode, account mode, etc.
 
@@ -135,8 +133,6 @@ def get_account_info(api, *, headers={}, **kwargs):
         https://bybit-exchange.github.io/docs/v5/account/account-info
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -155,6 +151,7 @@ def get_account_info(api, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)

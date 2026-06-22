@@ -10,7 +10,7 @@ import integrations.shared.exchange.mexc as mexc
 logger = logging.getLogger(__name__)
 
 
-def get_account_assets(api, *, headers={}, **kwargs):
+def get_account_assets(api, **kwargs):
     """ 
     Get all account assets.
 
@@ -18,7 +18,6 @@ def get_account_assets(api, *, headers={}, **kwargs):
         https://www.mexc.com/api-docs/futures/account-and-trading-endpoints#get-all-account-assets
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
-        headers (dict): HTTP headers, e.g. Recv-Window
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -37,6 +36,7 @@ def get_account_assets(api, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -57,7 +57,7 @@ def get_account_assets(api, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_currency_asset(api, currency, *, headers={}, **kwargs):
+def get_currency_asset(api, currency, **kwargs):
     """ 
     Get single currency asset info.
 
@@ -66,7 +66,6 @@ def get_currency_asset(api, currency, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         currency (str): Currency name.
-        headers (dict): HTTP headers, e.g. Recv-Window
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -85,6 +84,7 @@ def get_currency_asset(api, currency, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -105,7 +105,7 @@ def get_currency_asset(api, currency, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_open_positions(api, params={}, *, headers={}, **kwargs):
+def get_open_positions(api, params={}, **kwargs):
     """ 
     Get info about open positions.
 
@@ -116,7 +116,6 @@ def get_open_positions(api, params={}, *, headers={}, **kwargs):
         params (dict):
             symbol (str): Symbol of the contract.
             positionId (long): Position ID.
-        headers (dict): HTTP headers, e.g. Recv-Window
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -135,6 +134,7 @@ def get_open_positions(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -156,7 +156,7 @@ def get_open_positions(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_fee_details(api, params={}, *, headers={}, **kwargs):
+def get_funding_fee_details(api, params={}, **kwargs):
     """ 
     Get funding fee details.
 
@@ -172,7 +172,6 @@ def get_funding_fee_details(api, params={}, *, headers={}, **kwargs):
             position_type (int): Position type, 1 long 2 short
             start_time (long): Start time
             end_time (long): End time
-        headers (dict): HTTP headers, e.g. Recv-Window
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -191,6 +190,7 @@ def get_funding_fee_details(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)

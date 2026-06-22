@@ -10,7 +10,7 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def get_current_funding_rate(symbol, *, headers={}, **kwargs):
+def get_current_funding_rate(symbol, **kwargs):
     """ 
     Get current funding rate for the contract.
 
@@ -18,7 +18,6 @@ def get_current_funding_rate(symbol, *, headers={}, **kwargs):
         https://www.kucoin.com/docs-new/rest/futures-trading/funding-fees/get-current-funding-rate
     Args:
         symbol (str): Symbol of the contract.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -37,6 +36,7 @@ def get_current_funding_rate(symbol, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -54,7 +54,7 @@ def get_current_funding_rate(symbol, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
+def get_public_funding_history(symbol, from_, to, **kwargs):
     """ 
     Get public funding history for the contract.
 
@@ -64,7 +64,6 @@ def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
         symbol (str): Symbol of the contract.
         from_ (int): Begin time (milliseconds).
         to (int): End time (milliseconds).
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -83,6 +82,7 @@ def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -100,7 +100,7 @@ def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs):
+def get_private_funding_history(api, symbol, params={}, **kwargs):
     """ 
     Get private funding history for the contract. Maximum for 3 months.
 
@@ -116,7 +116,6 @@ def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs)
             offset (int): Start offset.
             forward (bool): 
             maxCount (int): Maximum records. Default: 10
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -135,6 +134,7 @@ def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs)
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)

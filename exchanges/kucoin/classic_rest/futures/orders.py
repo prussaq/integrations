@@ -11,7 +11,7 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def add_order(api, data, *, headers={}, **kwargs):
+def add_order(api, data, **kwargs):
     """ 
     Place futures order.
 
@@ -20,7 +20,6 @@ def add_order(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -36,6 +35,7 @@ def add_order(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -57,7 +57,7 @@ def add_order(api, data, *, headers={}, **kwargs):
     return body
 
 
-def add_TP_SL_order(api, data, *, headers={}, **kwargs):
+def add_TP_SL_order(api, data, **kwargs):
     """ 
     Place take profit and stop loss order.
 
@@ -66,7 +66,6 @@ def add_TP_SL_order(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -82,6 +81,7 @@ def add_TP_SL_order(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)

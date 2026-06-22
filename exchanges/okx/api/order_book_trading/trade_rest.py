@@ -11,7 +11,7 @@ import integrations.shared.exchange.okx as okx
 logger = logging.getLogger(__name__)
 
 
-def place_order(api, order, *, headers={}, ttl=None, **kwargs):
+def place_order(api, order, *, ttl=None, **kwargs):
     """ 
     Place an order.
 
@@ -20,8 +20,6 @@ def place_order(api, order, *, headers={}, ttl=None, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         order (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
-            expTime (header, internal): DO NOT SET. Absolute expiration timestamp (ms); use `ttl` instead.
         ttl (int): Receive window (ms); used to derive `expTime` header as signing_time + ttl.
         kwargs:
             session (requests.Session): Must be managed by caller.
@@ -38,6 +36,7 @@ def place_order(api, order, *, headers={}, ttl=None, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)

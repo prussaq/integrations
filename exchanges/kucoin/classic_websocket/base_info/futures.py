@@ -10,14 +10,13 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def get_public_token(*, headers={},**kwargs):
+def get_public_token(**kwargs):
     """ 
     Get public futures websocket token and additional info.
 
     Link: 
         https://www.kucoin.com/docs-new/websocket-api/base-info/get-public-token-futures
     Args:
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -36,6 +35,7 @@ def get_public_token(*, headers={},**kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -53,7 +53,7 @@ def get_public_token(*, headers={},**kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_private_token(api, *, headers={}, **kwargs):
+def get_private_token(api, **kwargs):
     """ 
     Get private futures websocket token and additional info.
 
@@ -61,7 +61,6 @@ def get_private_token(api, *, headers={}, **kwargs):
         https://www.kucoin.com/docs-new/websocket-api/base-info/get-private-token-futures
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -80,6 +79,7 @@ def get_private_token(api, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)

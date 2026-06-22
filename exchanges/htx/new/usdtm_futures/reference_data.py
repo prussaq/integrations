@@ -9,7 +9,7 @@ import integrations.shared.exchange.htx as htx
 logger = logging.getLogger(__name__)
 
 
-def query_funding_rate(contract_code, *, headers={}, **kwargs):
+def query_funding_rate(contract_code, **kwargs):
     """ 
     Query current funding rate for the contract.
 
@@ -17,7 +17,6 @@ def query_funding_rate(contract_code, *, headers={}, **kwargs):
         https://www.htx.com/en-us/opend/newApiPages/?id=8cb7ec03-77b5-11ed-9966-0242ac110003
     Args:
         contract_code (str): Contract code (case-insensitive), e.g. "BTC-USDT".
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -36,6 +35,7 @@ def query_funding_rate(contract_code, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -54,7 +54,7 @@ def query_funding_rate(contract_code, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_batch_funding_rate(params={}, *, headers={}, **kwargs):
+def query_batch_funding_rate(params={}, **kwargs):
     """ 
     Query a batch of current funding rate.
 
@@ -63,7 +63,6 @@ def query_batch_funding_rate(params={}, *, headers={}, **kwargs):
     Args:
         params (dict): 
             contract_code (str): Contract code; defaults to all.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -82,6 +81,7 @@ def query_batch_funding_rate(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -100,7 +100,7 @@ def query_batch_funding_rate(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_historical_funding_rate(contract_code, params={}, *, headers={}, **kwargs):
+def query_historical_funding_rate(contract_code, params={}, **kwargs):
     """ 
     Query historical funding rate.
 
@@ -111,7 +111,6 @@ def query_historical_funding_rate(contract_code, params={}, *, headers={}, **kwa
         params (dict): 
             page_index (int): Page index; 1 by default.
             page_size (int): Page size (1-50); 20 by default; 50 at most.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -130,6 +129,7 @@ def query_historical_funding_rate(contract_code, params={}, *, headers={}, **kwa
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -149,7 +149,7 @@ def query_historical_funding_rate(contract_code, params={}, *, headers={}, **kwa
     return execute_request(send, read, check, kwargs)
 
 
-def query_contract_info(params={}, *, headers={}, **kwargs):
+def query_contract_info(params={}, **kwargs):
     """ 
     Query contract info.
 
@@ -162,7 +162,6 @@ def query_contract_info(params={}, *, headers={}, **kwargs):
             pair (str): Pair, e.g. BTC-USDT.
             contract_type (str): Contract type: swap, this_week, next_week, quarter, next_quarter
             business_type (str): Business type: futures, swap, all; defaults to swap.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -181,6 +180,7 @@ def query_contract_info(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -199,7 +199,7 @@ def query_contract_info(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_contract_elements(params={}, *, headers={}, **kwargs):
+def query_contract_elements(params={}, **kwargs):
     """ 
     Query contract elements.
 
@@ -208,7 +208,6 @@ def query_contract_elements(params={}, *, headers={}, **kwargs):
     Args:
         params (dict): 
             contract_code (str): Contract code; defaults to all.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -227,6 +226,7 @@ def query_contract_elements(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)

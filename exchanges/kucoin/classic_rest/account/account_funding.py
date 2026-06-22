@@ -10,7 +10,7 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def get_futures_account(api, params={}, *, headers={}, **kwargs):
+def get_futures_account(api, params={}, **kwargs):
     """ 
     Get futures account info.
 
@@ -20,7 +20,6 @@ def get_futures_account(api, params={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         params (dict):
             currency (str): Currency name. Default: XBT
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -39,6 +38,7 @@ def get_futures_account(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)

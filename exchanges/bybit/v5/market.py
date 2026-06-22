@@ -10,7 +10,7 @@ import integrations.shared.exchange.bybit as bybit
 logger = logging.getLogger(__name__)
 
 
-def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
+def get_kline(symbol, interval, params={}, **kwargs):
     """ 
     Query for historical klines (also known as candles/candlesticks). 
     Charts are returned in groups based on the requested interval.
@@ -25,7 +25,6 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
             start (int): The start timestamp (ms).
             end (int): The end timestamp (ms).
             limit (int): Limit for data size per page. [1, 1000]. Default: 200
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -44,6 +43,7 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     timeout = kwargs.get('timeout', bybit.TIMEOUT)
@@ -63,7 +63,7 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_instruments_info(category, params={}, *, headers={}, **kwargs):
+def get_instruments_info(category, params={}, **kwargs):
     """ 
     Query for the instrument specification of online trading pairs. 
 
@@ -78,7 +78,6 @@ def get_instruments_info(category, params={}, *, headers={}, **kwargs):
             baseCoin (str): Base coin, uppercase only.
             limit (int): Limit for data size per page. [1, 1000]. Default: 500
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -97,6 +96,7 @@ def get_instruments_info(category, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     timeout = kwargs.get('timeout', bybit.TIMEOUT)
@@ -115,7 +115,7 @@ def get_instruments_info(category, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_tickers(category, params={}, *, headers={}, **kwargs):
+def get_tickers(category, params={}, **kwargs):
     """ 
     Query for the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours.
 
@@ -127,7 +127,6 @@ def get_tickers(category, params={}, *, headers={}, **kwargs):
             symbol (str): Symbol name, like BTCUSDT, uppercase only.
             baseCoin (str): Base coin, uppercase only. Apply to option only.
             expDate (str): Expiry date. e.g., 25DEC22. Apply to option only.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -146,6 +145,7 @@ def get_tickers(category, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     timeout = kwargs.get('timeout', bybit.TIMEOUT)
@@ -164,7 +164,7 @@ def get_tickers(category, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwargs):
+def get_funding_rate_history(category, symbol, params={}, **kwargs):
     """ 
     Query for historical funding rates.
 
@@ -177,7 +177,6 @@ def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwarg
             startTime (int): The start timestamp (ms).
             endTime (int): The end timestamp (ms).
             limit (int): Limit for data size per page. [1, 200]. Default: 200
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -196,6 +195,7 @@ def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwarg
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     timeout = kwargs.get('timeout', bybit.TIMEOUT)

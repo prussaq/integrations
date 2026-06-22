@@ -11,7 +11,7 @@ import integrations.shared.exchange.okx as okx
 logger = logging.getLogger(__name__)
 
 
-def get_ticker(inst_id, *, headers={}, **kwargs):
+def get_ticker(inst_id, **kwargs):
     """ 
     Retrieve the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours. 
     Best ask price may be lower than the best bid price during the pre-open period.
@@ -20,7 +20,6 @@ def get_ticker(inst_id, *, headers={}, **kwargs):
         https://www.okx.com/docs-v5/en/#order-book-trading-market-data-get-ticker
     Args:
         inst_id (dict): Instrument ID, e.g. BTC-USD-SWAP
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -36,6 +35,7 @@ def get_ticker(inst_id, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)

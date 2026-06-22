@@ -11,7 +11,7 @@ import integrations.shared.exchange.bitget as bitget
 logger = logging.getLogger(__name__)
 
 
-def place_order(api, data, *, headers={}, **kwargs):
+def place_order(api, data, **kwargs):
     """ 
     Place an order.
 
@@ -20,7 +20,6 @@ def place_order(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -39,6 +38,7 @@ def place_order(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
     timeout = kwargs.get('timeout', bitget.TIMEOUT)

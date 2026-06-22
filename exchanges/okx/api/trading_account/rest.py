@@ -11,7 +11,7 @@ import integrations.shared.exchange.okx as okx
 logger = logging.getLogger(__name__)
 
 
-def get_balance(api, params={}, *, headers={}, **kwargs):
+def get_balance(api, params={}, **kwargs):
     """ 
     Retrieve a list of assets (with non-zero balance), remaining balance, and available amount in the trading account.
 
@@ -21,7 +21,6 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         params (dict):
             ccy (str): Single currency or multiple currencies (no more than 20) separated with comma, e.g. BTC or BTC,ETH.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -40,6 +39,7 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
@@ -61,7 +61,7 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_positions(api, params={}, *, headers={}, **kwargs):
+def get_positions(api, params={}, **kwargs):
     """ 
     Retrieve information on your positions. When the account is in net mode, net positions will be displayed, 
     and when the account is in long/short mode, long or short positions will be displayed. 
@@ -75,7 +75,6 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
             instType (str): Instrument type: MARGIN, SWAP, FUTURES, OPTION
             instId (str): Instrument ID, e.g. BTC-USDT-SWAP. 
             posId (str): Single position ID or multiple position IDs (no more than 20) separated with comma.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -94,6 +93,7 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
@@ -115,7 +115,7 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_positions_history(api, params={}, *, headers={}, **kwargs):
+def get_positions_history(api, params={}, **kwargs):
     """ 
     Retrieve the updated position data for the last 3 months. 
     Return in reverse chronological order using utime. 
@@ -140,7 +140,6 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
             before (str): Pagination of data to return records newer than the requested uTime, Unix timestamp format in milliseconds, e.g. 1597026383085
             limit (str): Number of results per request. The maximum is 100. The default is 100. 
                 All records that have the same uTime will be returned at the current request
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -159,6 +158,7 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
@@ -180,7 +180,7 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
+def get_bills_details_7d(api, params={}, **kwargs):
     """ 
     Retrieve the bills of the account. The bill refers to all transaction records 
     that result in changing the balance of an account. Pagination is supported, 
@@ -204,7 +204,6 @@ def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
             begin (str): Filter with a begin timestamp ts. Unix timestamp format in milliseconds, e.g. 1597026383085
             end (str): Filter with an end timestamp ts. Unix timestamp format in milliseconds, e.g. 1597026383085
             limit (str): Number of results per request. The maximum is 100. The default is 100.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -223,6 +222,7 @@ def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
@@ -244,7 +244,7 @@ def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
+def set_leverage(api, lever, mgn_mode, data={}, **kwargs):
     """ 
     There are 10 different scenarios for leverage setting: see docs at `Link`
 
@@ -258,7 +258,6 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
             instId (str): Instrument ID. 
             ccy (str): Currency.
             posSide (str): Position side: long short
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -277,6 +276,7 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
@@ -302,7 +302,7 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def increase_decrease_margin(api, data, *, headers={}, **kwargs):
+def increase_decrease_margin(api, data, **kwargs):
     """ 
     Increase or decrease the margin of the isolated position. Margin reduction may result in the change of the actual leverage.
 
@@ -316,7 +316,6 @@ def increase_decrease_margin(api, data, *, headers={}, **kwargs):
             type (str): add: add margin; reduce: reduce margin
             amt (str): Amount to be increased or decreased.
             ccy (str): Currency. Applicable to isolated MARGIN orders.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
@@ -332,6 +331,7 @@ def increase_decrease_margin(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
