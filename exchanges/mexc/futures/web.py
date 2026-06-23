@@ -15,8 +15,7 @@ FUTURES_BASE_URL = 'https://futures.mexc.com'
 logger = logging.getLogger(__name__)
 
 
-def sign_headers(api, data={}):
-    headers = {}
+def sign_headers(headers, api, data):
     def gen_signature(timestamp, data):
         def md5(value): return hashlib.md5(value.encode('utf-8')).hexdigest()
         g = md5(api['uid'] + timestamp)[7:]
@@ -28,7 +27,6 @@ def sign_headers(api, data={}):
     headers['x-mxc-nonce'] = timestamp
     headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
     headers['Authorization'] = api['uid']
-    return headers
 
 
 def get_account_assets(api, **kwargs):
@@ -40,11 +38,11 @@ def get_account_assets(api, **kwargs):
     Args:
         api (dict): API credentials
         kwargs:
-            timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -60,7 +58,7 @@ def get_account_assets(api, **kwargs):
     timeout = kwargs.get('timeout', TIMEOUT)
 
     def send(): 
-        headers.update(sign_headers(api))
+        sign_headers(headers, api, data)
         return cffi_requests.get(url, headers=headers, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
@@ -84,8 +82,8 @@ def place_order(api, data, **kwargs):
         api (dict): WEB API credentials.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         kwargs:
-            timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -101,7 +99,7 @@ def place_order(api, data, **kwargs):
     timeout = kwargs.get('timeout', TIMEOUT)
 
     rate_limiter.acquire('mexc.futures.web.place_order') 
-    headers.update(sign_headers(api, data))
+    sign_headers(headers, api, data)
     response = cffi_requests.post(url, headers=headers, json=data, timeout=timeout)
     body = response.json()
     if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -122,8 +120,8 @@ def place_TP_SL_order(api, data, **kwargs):
         api (dict): WEB API credentials.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         kwargs:
-            timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -139,7 +137,7 @@ def place_TP_SL_order(api, data, **kwargs):
     timeout = kwargs.get('timeout', TIMEOUT)
 
     def send(): 
-        headers.update(sign_headers(api, data))
+        sign_headers(headers, api, data)
         return cffi_requests.get(url, headers=headers, json=data, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
