@@ -96,7 +96,6 @@ def query_account_info_isolated(api, data=None, **kwargs):
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_account_info'
     url = f"{base_url}{path}"
-    if data is None: data = {}
     params = {}
 
     def send(settings): 
@@ -149,7 +148,6 @@ def query_position_info_isolated(api, data=None, **kwargs):
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_position_info'
     url = f"{base_url}{path}"
-    if data is None: data = {}
     params = {}
 
     def send(settings): 

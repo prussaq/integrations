@@ -40,7 +40,6 @@ def get_perpetual_markets(params=None, **kwargs):
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', dydx.INDEXER_MAINNET_HTTP)
     timeout = kwargs.pop('timeout', dydx.TIMEOUT)
-    if params is None: params = {}
     url = f"{base_url}/v4/perpetualMarkets"
 
     def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
