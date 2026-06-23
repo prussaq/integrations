@@ -43,7 +43,6 @@ def get_kline(symbol, interval, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     timeout = kwargs.get('timeout', bybit.TIMEOUT)
@@ -51,7 +50,7 @@ def get_kline(symbol, interval, params={}, **kwargs):
     params['symbol'] = symbol
     params['interval'] = interval
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -96,14 +95,13 @@ def get_instruments_info(category, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     timeout = kwargs.get('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/market/instruments-info"
     params['category'] = category
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -145,14 +143,13 @@ def get_tickers(category, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     timeout = kwargs.get('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/market/tickers"
     params['category'] = category
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -195,7 +192,6 @@ def get_funding_rate_history(category, symbol, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     timeout = kwargs.get('timeout', bybit.TIMEOUT)
@@ -203,7 +199,7 @@ def get_funding_rate_history(category, symbol, params={}, **kwargs):
     params['category'] = category
     params['symbol'] = symbol
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

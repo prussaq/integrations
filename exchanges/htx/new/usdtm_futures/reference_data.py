@@ -35,13 +35,12 @@ def query_funding_rate(contract_code, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
     url = f"{base_url}/linear-swap-api/v1/swap_funding_rate?contract_code={contract_code}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -81,13 +80,12 @@ def query_batch_funding_rate(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
     url = f"{base_url}/linear-swap-api/v1/swap_batch_funding_rate"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -129,14 +127,13 @@ def query_historical_funding_rate(contract_code, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
     params['contract_code'] = contract_code
     url = f"{base_url}/linear-swap-api/v1/swap_historical_funding_rate"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -180,13 +177,12 @@ def query_contract_info(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
     url = f"{base_url}/linear-swap-api/v1/swap_contract_info"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -226,13 +222,12 @@ def query_contract_elements(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
     url = f"{base_url}/linear-swap-api/v1/swap_query_elements"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

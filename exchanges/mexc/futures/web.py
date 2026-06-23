@@ -54,8 +54,8 @@ def get_account_assets(api, **kwargs):
         Makes HTTP request by `curl_cffi` module.
     """
     url = f"{FUTURES_BASE_URL}/api/v1/private/account/assets"
-    headers = {}
-    timeout = kwargs.get('timeout', TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    timeout = kwargs.pop('timeout', TIMEOUT)
 
     def send(): 
         sign_headers(headers, api, data)
@@ -95,8 +95,9 @@ def place_order(api, data, **kwargs):
         Makes HTTP request by `curl_cffi` module.
     """
     url = f"{FUTURES_BASE_URL}/api/v1/private/order/create"
-    headers = {'Content-Type': 'application/json'}
-    timeout = kwargs.get('timeout', TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    headers['Content-Type'] = 'application/json'
+    timeout = kwargs.pop('timeout', TIMEOUT)
 
     rate_limiter.acquire('mexc.futures.web.place_order') 
     sign_headers(headers, api, data)
@@ -133,8 +134,9 @@ def place_TP_SL_order(api, data, **kwargs):
         Makes HTTP request by `curl_cffi` module.
     """
     url = f"{FUTURES_BASE_URL}/api/v1/private/stoporder/place"
-    headers = {'Content-Type': 'application/json'}
-    timeout = kwargs.get('timeout', TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    headers['Content-Type'] = 'application/json'
+    timeout = kwargs.pop('timeout', TIMEOUT)
 
     def send(): 
         sign_headers(headers, api, data)

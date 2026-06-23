@@ -35,13 +35,12 @@ def get_ticker(inst_id, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
     url = f"{base_url}/api/v5/market/ticker?instId={inst_id}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

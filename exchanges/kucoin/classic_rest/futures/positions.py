@@ -38,7 +38,7 @@ def get_position_details(api, symbol, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -88,7 +88,7 @@ def get_position_list(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -142,7 +142,7 @@ def get_positions_history(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -188,7 +188,7 @@ def add_isolated_margin(api, data, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -236,7 +236,7 @@ def remove_isolated_margin(api, data, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)

@@ -36,13 +36,12 @@ def get_symbol(symbol, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v1/contracts/{symbol}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -79,13 +78,12 @@ def get_all_symbols(**kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v1/contracts/active"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -123,13 +121,12 @@ def get_ticker(symbol, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v1/ticker?symbol={symbol}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -172,7 +169,6 @@ def get_klines(symbol, granularity, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -180,7 +176,7 @@ def get_klines(symbol, granularity, params={}, **kwargs):
     params['granularity'] = granularity
     url = f"{base_url}/api/v1/kline/query?{urlencode(params)}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

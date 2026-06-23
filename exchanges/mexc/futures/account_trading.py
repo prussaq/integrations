@@ -36,7 +36,7 @@ def get_account_assets(api, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -84,7 +84,7 @@ def get_currency_asset(api, currency, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -134,7 +134,7 @@ def get_open_positions(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
@@ -190,7 +190,7 @@ def get_funding_fee_details(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', mexc.TIMEOUT)
