@@ -11,7 +11,7 @@ import integrations.shared.exchange.bybit as bybit
 logger = logging.getLogger(__name__)
 
 
-def get_position_info(api, category, params={}, **kwargs):
+def get_position_info(api, category, params=None, **kwargs):
     """ 
     Query real-time position data, such as position size, cumulative realized PNL, etc.
 
@@ -45,18 +45,19 @@ def get_position_info(api, category, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     params['category'] = category
     query = urlencode(params)
     url = f"{base_url}/v5/position/list?{query}"
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window, query)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -100,17 +101,17 @@ def set_leverage(api, category, symbol, *, buy, sell, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/position/set-leverage"
     payload = f'{{"category":"{category}","symbol":"{symbol}","buyLeverage":"{buy}","sellLeverage":"{sell}"}}'
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -147,17 +148,17 @@ def set_trading_stop(api, data, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/position/trading-stop"
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -165,11 +166,12 @@ def set_trading_stop(api, data, **kwargs):
         if code != 0: 
             raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
 
-    rate_limiter.acquire('bybit.v5.position.set_trading_stop')  
-    return execute_request(send, read, check, retries=1)
+    rate_limiter.acquire('bybit.v5.position.set_trading_stop')
+    kwargs['retries'] = 1
+    return execute_request(send, read, check, kwargs)
 
 
-def get_closed_PnL(api, category, params={}, **kwargs):
+def get_closed_PnL(api, category, params=None, **kwargs):
     """ 
     Query user's closed profit and loss records.
 
@@ -207,18 +209,19 @@ def get_closed_PnL(api, category, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     params['category'] = category
     query = urlencode(params)
     url = f"{base_url}/v5/position/closed-pnl?{query}"
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window, query)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

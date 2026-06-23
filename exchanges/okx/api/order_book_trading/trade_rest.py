@@ -37,18 +37,18 @@ def place_order(api, order, *, ttl=None, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'POST'
     endpoint = '/api/v5/trade/order'
     url = base_url + endpoint
     payload = json.dumps(order, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint, payload, ttl)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

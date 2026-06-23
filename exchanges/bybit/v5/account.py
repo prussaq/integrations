@@ -39,17 +39,17 @@ def get_transferable_amount_unified(api, coin, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     params = {'coinName': coin}
     query = urlencode(params)
     url = f"{base_url}/v5/account/withdrawal?{query}"
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window, query)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -104,16 +104,16 @@ def get_transaction_log(api, params={}, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     query = urlencode(params)
     url = f"{base_url}/v5/account/transaction-log?{query}"
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window, query)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -152,15 +152,15 @@ def get_account_info(api, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/account/info"
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

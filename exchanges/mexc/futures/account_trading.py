@@ -37,15 +37,15 @@ def get_account_assets(api, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     method = 'GET'
     url = f"{base_url}/api/v1/private/account/assets"
 
-    def send(): 
+    def send(settings): 
         mexc.sign_headers(headers, api, method)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -85,15 +85,15 @@ def get_currency_asset(api, currency, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     method = 'GET'
     url = f"{base_url}/api/v1/private/account/asset/{currency}"
 
-    def send(): 
+    def send(settings): 
         mexc.sign_headers(headers, api, method)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -105,7 +105,7 @@ def get_currency_asset(api, currency, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_open_positions(api, params={}, **kwargs):
+def get_open_positions(api, params=None, **kwargs):
     """ 
     Get info about open positions.
 
@@ -134,17 +134,18 @@ def get_open_positions(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     method = 'GET'
     query = urlencode({k: v for k, v in sorted(params.items()) if v is not None})
     url = f"{base_url}/api/v1/private/position/open_positions" + (f"?{query}" if query else '')
 
-    def send(): 
+    def send(settings): 
         mexc.sign_headers(headers, api, method, query=query)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -156,7 +157,7 @@ def get_open_positions(api, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_fee_details(api, params={}, **kwargs):
+def get_funding_fee_details(api, params=None, **kwargs):
     """ 
     Get funding fee details.
 
@@ -190,17 +191,18 @@ def get_funding_fee_details(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     method = 'GET'
     query = urlencode({k: v for k, v in sorted(params.items()) if v is not None})
     url = f"{base_url}/api/v1/private/position/funding_records" + (f"?{query}" if query else '')
 
-    def send(): 
+    def send(settings): 
         mexc.sign_headers(headers, api, method, query=query)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

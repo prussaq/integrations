@@ -11,7 +11,7 @@ import integrations.shared.exchange.okx as okx
 logger = logging.getLogger(__name__)
 
 
-def get_balance(api, params={}, **kwargs):
+def get_balance(api, params=None, **kwargs):
     """ 
     Retrieve a list of assets (with non-zero balance), remaining balance, and available amount in the trading account.
 
@@ -39,17 +39,18 @@ def get_balance(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v5/account/balance'+ (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -61,7 +62,7 @@ def get_balance(api, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_positions(api, params={}, **kwargs):
+def get_positions(api, params=None, **kwargs):
     """ 
     Retrieve information on your positions. When the account is in net mode, net positions will be displayed, 
     and when the account is in long/short mode, long or short positions will be displayed. 
@@ -93,17 +94,18 @@ def get_positions(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v5/account/positions'+ (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -115,7 +117,7 @@ def get_positions(api, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_positions_history(api, params={}, **kwargs):
+def get_positions_history(api, params=None, **kwargs):
     """ 
     Retrieve the updated position data for the last 3 months. 
     Return in reverse chronological order using utime. 
@@ -158,17 +160,18 @@ def get_positions_history(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v5/account/positions-history'+ (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -180,7 +183,7 @@ def get_positions_history(api, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_bills_details_7d(api, params={}, **kwargs):
+def get_bills_details_7d(api, params=None, **kwargs):
     """ 
     Retrieve the bills of the account. The bill refers to all transaction records 
     that result in changing the balance of an account. Pagination is supported, 
@@ -222,17 +225,18 @@ def get_bills_details_7d(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v5/account/bills'+ (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -244,7 +248,7 @@ def get_bills_details_7d(api, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def set_leverage(api, lever, mgn_mode, data={}, **kwargs):
+def set_leverage(api, lever, mgn_mode, data=None, **kwargs):
     """ 
     There are 10 different scenarios for leverage setting: see docs at `Link`
 
@@ -276,10 +280,11 @@ def set_leverage(api, lever, mgn_mode, data={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if data is None: data = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'POST'
     endpoint = '/api/v5/account/set-leverage'
     url = base_url + endpoint
@@ -288,9 +293,9 @@ def set_leverage(api, lever, mgn_mode, data={}, **kwargs):
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -332,18 +337,18 @@ def increase_decrease_margin(api, data, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'POST'
     endpoint = '/api/v5/account/position/margin-balance'
     url = base_url + endpoint
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -351,5 +356,6 @@ def increase_decrease_margin(api, data, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    rate_limiter.acquire('okx.api.trading_account.rest.increase_decrease_margin') 
-    return execute_request(send, read, check, retries=1)
+    rate_limiter.acquire('okx.api.trading_account.rest.increase_decrease_margin')
+    kwargs['retries'] = 1
+    return execute_request(send, read, check, kwargs)

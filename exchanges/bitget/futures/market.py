@@ -37,12 +37,12 @@ def get_ticker(symbol, product_type, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/ticker?productType={product_type}&symbol={symbol}"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -54,7 +54,7 @@ def get_ticker(symbol, product_type, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_candlestick_data(symbol, product_type, granularity, params={}, **kwargs):
+def get_candlestick_data(symbol, product_type, granularity, params=None, **kwargs):
     """ 
     By default, 100 records are returned. If there is no data, an empty array is returned. 
     The queryable data history varies depending on the k-line granularity.
@@ -88,15 +88,16 @@ def get_candlestick_data(symbol, product_type, granularity, params={}, **kwargs)
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/candles"
     params['symbol'] = symbol
     params['productType'] = product_type
     params['granularity'] = granularity
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -135,12 +136,12 @@ def get_next_funding_time(symbol, product_type, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/funding-time?productType={product_type}&symbol={symbol}"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -152,7 +153,7 @@ def get_next_funding_time(symbol, product_type, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_historical_funding_rates(symbol, product_type, params={}, **kwargs):
+def get_historical_funding_rates(symbol, product_type, params=None, **kwargs):
     """ 
     Get the historical funding rate of the contract
 
@@ -182,14 +183,15 @@ def get_historical_funding_rates(symbol, product_type, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/history-fund-rate"
     params['symbol'] = symbol
     params['productType'] = product_type
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -201,7 +203,7 @@ def get_historical_funding_rates(symbol, product_type, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_current_funding_rate(product_type, params={}, **kwargs):
+def get_current_funding_rate(product_type, params=None, **kwargs):
     """ 
     Get the current funding rate of the contract
 
@@ -229,13 +231,13 @@ def get_current_funding_rate(product_type, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/current-fund-rate"
     params['productType'] = product_type
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

@@ -9,7 +9,7 @@ from integrations.shared.settings import RETRIES, DELAY, BACKOFF
 logger = logging.getLogger(__name__)
 
 
-def execute_request(send, read, check, settings={}):
+def execute_request(send, read, check, settings=None):
     """
     Execute a request with retries.
 
@@ -27,6 +27,7 @@ def execute_request(send, read, check, settings={}):
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body. 
@@ -40,18 +41,20 @@ def execute_request(send, read, check, settings={}):
         Any exception raised by `check`:
             Propagated immediately without retry.
     """
+    if settings is None: settings = {}
     attempt = 0
     errors = []
     response = None
     body = None
-    retries = settings.get('retries', RETRIES)
-    delay = settings.get('delay', DELAY)
-    backoff = settings.get('backoff', BACKOFF)
+    retries = settings.pop('retries', RETRIES)
+    delay = settings.pop('delay', DELAY)
+    backoff = settings.pop('backoff', BACKOFF)
+    full = settings.pop('full', False)
 
     while attempt < retries:
         attempt += 1
         try:
-            response = send()
+            response = send(settings)
             response.raise_for_status()
             body = read(response)
             break
@@ -69,5 +72,5 @@ def execute_request(send, read, check, settings={}):
         delay *= random.uniform(0.8, 1.2)
 
     check(response, body)
-    if settings.get('full'): return response, body
+    if full: return response, body
     return body

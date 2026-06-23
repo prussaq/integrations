@@ -10,7 +10,7 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def get_futures_account(api, params={}, **kwargs):
+def get_futures_account(api, params=None, **kwargs):
     """ 
     Get futures account info.
 
@@ -38,17 +38,18 @@ def get_futures_account(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v1/account-overview' + (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

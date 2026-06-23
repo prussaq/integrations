@@ -9,7 +9,7 @@ import integrations.shared.exchange.htx as htx
 logger = logging.getLogger(__name__)
 
 
-def query_unified_account_assets(api, params={}, **kwargs):
+def query_unified_account_assets(api, params=None, **kwargs):
     """ 
     Query unified account assets (positions).
 
@@ -37,17 +37,18 @@ def query_unified_account_assets(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'GET'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v3/unified_account_info'
     url = f"{base_url}{path}"
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.get(url, params=params, timeout=timeout)
+        return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

@@ -35,12 +35,12 @@ def get_symbol(symbol, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.SPOT_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v2/symbols/{symbol}"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -52,7 +52,7 @@ def get_symbol(symbol, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_all_symbols(params={}, **kwargs):
+def get_all_symbols(params=None, **kwargs):
     """ 
     Request a list of available currency pairs for trading via this endpoint.
 
@@ -79,12 +79,13 @@ def get_all_symbols(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.SPOT_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v2/symbols"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -96,7 +97,7 @@ def get_all_symbols(params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_klines(symbol, type, params={}, **kwargs):
+def get_klines(symbol, type, params=None, **kwargs):
     """ 
     Get the Kline of the symbol. Data are returned in grouped buckets based on requested type.
     For each query, the system would return at most 1500 pieces of data. To obtain more data, please page the data by time.
@@ -128,14 +129,15 @@ def get_klines(symbol, type, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.SPOT_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     params['symbol'] = symbol
     params['type'] = type
     url = f"{base_url}/api/v1/market/candles"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

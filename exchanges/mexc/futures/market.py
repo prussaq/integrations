@@ -37,12 +37,12 @@ def get_contract_info(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/detail"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -80,12 +80,12 @@ def get_index_price(symbol, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/index_price/{symbol}"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -123,12 +123,12 @@ def get_funding_rate(symbol, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/funding_rate/{symbol}"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -170,12 +170,12 @@ def get_candlestick_data(symbol, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/kline/{symbol}"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -214,12 +214,12 @@ def get_ticker(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/ticker"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -259,12 +259,12 @@ def get_funding_rate_history(symbol, page_num=1, page_size=20, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/funding_rate/history?symbol={symbol}&page_num={page_num}&page_size={page_size}"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
