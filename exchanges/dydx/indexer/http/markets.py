@@ -9,7 +9,7 @@ import integrations.shared.exchange.dydx as dydx
 logger = logging.getLogger(__name__)
 
 
-def get_perpetual_markets(params={}, **kwargs):
+def get_perpetual_markets(params=None, **kwargs):
     """ 
     Retrieves perpetual markets..
 
@@ -40,6 +40,7 @@ def get_perpetual_markets(params={}, **kwargs):
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', dydx.INDEXER_MAINNET_HTTP)
     timeout = kwargs.pop('timeout', dydx.TIMEOUT)
+    if params is None: params = {}
     url = f"{base_url}/v4/perpetualMarkets"
 
     def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
@@ -51,7 +52,7 @@ def get_perpetual_markets(params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_candles(market, resolution, params={}, **kwargs):
+def get_candles(market, resolution, params=None, **kwargs):
     """ 
     Retrieves candle data for a specific perpetual market.
 
@@ -85,6 +86,7 @@ def get_candles(market, resolution, params={}, **kwargs):
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', dydx.INDEXER_MAINNET_HTTP)
     timeout = kwargs.pop('timeout', dydx.TIMEOUT)
+    if params is None: params = {}
     params['resolution'] = resolution
     url = f"{base_url}/v4/candles/perpetualMarkets/{market}"
 

@@ -61,7 +61,7 @@ def query_asset_valuation(api, asset, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_account_info_isolated(api, data={}, **kwargs):
+def query_account_info_isolated(api, data=None, **kwargs):
     """ 
     Query user’s account information (isolated).
 
@@ -96,6 +96,7 @@ def query_account_info_isolated(api, data={}, **kwargs):
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_account_info'
     url = f"{base_url}{path}"
+    if data is None: data = {}
     params = {}
 
     def send(settings): 
@@ -113,7 +114,7 @@ def query_account_info_isolated(api, data={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_position_info_isolated(api, data={}, **kwargs):
+def query_position_info_isolated(api, data=None, **kwargs):
     """ 
     Query user’s position information (isolated).
 
@@ -148,6 +149,7 @@ def query_position_info_isolated(api, data={}, **kwargs):
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_position_info'
     url = f"{base_url}{path}"
+    if data is None: data = {}
     params = {}
 
     def send(settings): 
@@ -165,7 +167,7 @@ def query_position_info_isolated(api, data={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_account_financial_records_isolated(api, mar_acct, data={}, **kwargs):
+def query_account_financial_records_isolated(api, mar_acct, data=None, **kwargs):
     """ 
     Query account financial records (isolated) (New).
 
@@ -206,6 +208,7 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, **kwargs):
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v3/swap_financial_record'
     url = f"{base_url}{path}"
+    if data is None: data = {}
     params = {}
     data['mar_acct'] = mar_acct
 
