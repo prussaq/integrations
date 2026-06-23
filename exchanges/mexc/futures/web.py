@@ -57,9 +57,9 @@ def get_account_assets(api, **kwargs):
     headers = kwargs.pop('headers', {})
     timeout = kwargs.pop('timeout', TIMEOUT)
 
-    def send(): 
+    def send(settings): 
         sign_headers(headers, api, data)
-        return cffi_requests.get(url, headers=headers, timeout=timeout)
+        return cffi_requests.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -99,15 +99,16 @@ def place_order(api, data, **kwargs):
     headers['Content-Type'] = 'application/json'
     timeout = kwargs.pop('timeout', TIMEOUT)
 
+    full = kwargs.pop('full', False)
     rate_limiter.acquire('mexc.futures.web.place_order') 
     sign_headers(headers, api, data)
-    response = cffi_requests.post(url, headers=headers, json=data, timeout=timeout)
+    response = cffi_requests.post(url, headers=headers, json=data, timeout=timeout, **kwargs)
     body = response.json()
     if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
     if not body.get('success'): 
         raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
             response=response, body=body)
-    if kwargs.get('full'): return response, body
+    if full: return response, body
     return body
 
 
@@ -138,9 +139,9 @@ def place_TP_SL_order(api, data, **kwargs):
     headers['Content-Type'] = 'application/json'
     timeout = kwargs.pop('timeout', TIMEOUT)
 
-    def send(): 
+    def send(settings): 
         sign_headers(headers, api, data)
-        return cffi_requests.get(url, headers=headers, json=data, timeout=timeout)
+        return cffi_requests.get(url, headers=headers, json=data, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -149,4 +150,5 @@ def place_TP_SL_order(api, data, **kwargs):
                 response=response, body=body)
 
     rate_limiter.acquire('mexc.futures.web.place_TP_SL_order') 
-    return execute_request(send, read, check, retries=1)
+    kwargs['retries'] = 1
+    return execute_request(send, read, check, kwargs)

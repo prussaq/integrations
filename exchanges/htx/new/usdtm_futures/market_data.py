@@ -36,12 +36,12 @@ def get_market_depth(contract_code, type, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     url = f"{base_url}/linear-swap-ex/market/depth?contract_code={contract_code}&type={type}"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -54,7 +54,7 @@ def get_market_depth(contract_code, type, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_market_BBO_data(params={}, **kwargs):
+def get_market_BBO_data(params=None, **kwargs):
     """ 
     Get market BBO data.
 
@@ -84,12 +84,13 @@ def get_market_BBO_data(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     url = f"{base_url}/linear-swap-ex/market/bbo"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -136,14 +137,14 @@ def get_kline_data(contract_code, period, params, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     params['contract_code'] = contract_code
     params['period'] = period
     url = f"{base_url}/linear-swap-ex/market/history/kline"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -156,7 +157,7 @@ def get_kline_data(contract_code, period, params, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_last_trade(params={}, **kwargs):
+def get_last_trade(params=None, **kwargs):
     """ 
     Query the last trade of a contract.
 
@@ -188,12 +189,13 @@ def get_last_trade(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     url = f"{base_url}/linear-swap-ex/market/trade"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

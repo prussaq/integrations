@@ -36,9 +36,9 @@ def query_asset_valuation(api, asset, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'POST'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_balance_valuation'
@@ -46,9 +46,9 @@ def query_asset_valuation(api, asset, **kwargs):
     params = {}
     payload = {"valuation_asset": asset}
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=payload, timeout=timeout)
+        return http.post(url, params=params, json=payload, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -89,18 +89,18 @@ def query_account_info_isolated(api, data={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'POST'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_account_info'
     url = f"{base_url}{path}"
     params = {}
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -141,18 +141,18 @@ def query_position_info_isolated(api, data={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'POST'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_position_info'
     url = f"{base_url}{path}"
     params = {}
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -199,9 +199,9 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'POST'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v3/swap_financial_record'
@@ -209,9 +209,9 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, **kwargs):
     params = {}
     data['mar_acct'] = mar_acct
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

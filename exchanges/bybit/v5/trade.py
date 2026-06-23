@@ -36,22 +36,23 @@ def place_order(api, data, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/order/create"
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
-
+    full = kwargs.pop('full', False)
+    
     rate_limiter.acquire('bybit.v5.trade.place_order')  
     bybit.sign_headers(headers, api, recv_window, payload)
-    response = http.post(url, data=payload, headers=headers, timeout=timeout)
+    response = http.post(url, data=payload, headers=headers, timeout=timeout, **kwargs)
     body = response.json()
     if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
     code = body.get('retCode')
     if code != 0: 
         raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
-    if kwargs.get('full'): return response, body
+    if full: return response, body
     return body
 

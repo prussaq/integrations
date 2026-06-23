@@ -35,12 +35,12 @@ def get_public_token(**kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v1/bullet-public"
 
-    def send(): return http.post(url, timeout=timeout)
+    def send(settings): return http.post(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -79,16 +79,16 @@ def get_private_token(api, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'POST'
     endpoint = '/api/v1/bullet-private'
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint)
-        return http.post(url, headers=headers, timeout=timeout)
+        return http.post(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

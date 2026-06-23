@@ -9,7 +9,7 @@ import integrations.shared.exchange.binance as binance
 logger = logging.getLogger(__name__)
 
 
-def get_kline(symbol, interval, params={}, **kwargs):
+def get_kline(symbol, interval, params=None, **kwargs):
     """ 
     Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
     
@@ -41,14 +41,15 @@ def get_kline(symbol, interval, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.SPOT_PUBLIC_MARKET_DATA_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.SPOT_PUBLIC_MARKET_DATA_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     params['symbol'] = symbol
     params['interval'] = interval
     url = f"{base_url}/api/v3/klines"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)

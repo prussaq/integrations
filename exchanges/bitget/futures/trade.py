@@ -39,18 +39,18 @@ def place_order(api, data, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     method = 'POST'
     path = '/api/v2/mix/position/single-position'
     url = base_url + path
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         bitget.sign_headers(headers, api, method, path, payload)
-        return http.post(url, headers=headers, timeout=timeout)
+        return http.post(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

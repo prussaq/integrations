@@ -39,16 +39,16 @@ def get_position_details(api, symbol, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'GET'
     endpoint = f"/api/v2/position?symbol={symbol}"
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -60,7 +60,7 @@ def get_position_details(api, symbol, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_position_list(api, params={}, **kwargs):
+def get_position_list(api, params=None, **kwargs):
     """ 
     Get position list by currency.
 
@@ -88,17 +88,18 @@ def get_position_list(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v1/positions' + (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -110,7 +111,7 @@ def get_position_list(api, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_positions_history(api, params={}, **kwargs):
+def get_positions_history(api, params=None, **kwargs):
     """ 
     Get positions history.
 
@@ -142,17 +143,18 @@ def get_positions_history(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
+    if params is None: params = {}
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v1/history-positions' + (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -189,18 +191,18 @@ def add_isolated_margin(api, data, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'POST'
     endpoint = f"/api/v1/position/margin/deposit-margin"
     url = base_url + endpoint
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -209,7 +211,8 @@ def add_isolated_margin(api, data, **kwargs):
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
     rate_limiter.acquire('kucoin.classic_rest.futures.positions.add_isolated_margin')
-    return execute_request(send, read, check, retries=1)
+    kwargs['retries'] = 1
+    return execute_request(send, read, check, kwargs)
 
 
 def remove_isolated_margin(api, data, **kwargs):
@@ -237,18 +240,18 @@ def remove_isolated_margin(api, data, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'POST'
     endpoint = f"/api/v1/margin/withdrawMargin"
     url = base_url + endpoint
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -257,4 +260,5 @@ def remove_isolated_margin(api, data, **kwargs):
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
     rate_limiter.acquire('kucoin.classic_rest.futures.positions.remove_isolated_margin')
-    return execute_request(send, read, check, retries=1)
+    kwargs['retries'] = 1
+    return execute_request(send, read, check, kwargs)

@@ -34,12 +34,12 @@ def get_exchange_info(**kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     url = f"{base_url}/fapi/v1/exchangeInfo"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
@@ -50,7 +50,7 @@ def get_exchange_info(**kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_kline(symbol, interval, params={}, **kwargs):
+def get_kline(symbol, interval, params=None, **kwargs):
     """ 
     Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
 
@@ -84,14 +84,15 @@ def get_kline(symbol, interval, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     params['symbol'] = symbol
     params['interval'] = interval
     url = f"{base_url}/fapi/v1/klines"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
@@ -102,7 +103,7 @@ def get_kline(symbol, interval, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_history(params={}, **kwargs):
+def get_funding_rate_history(params=None, **kwargs):
     """ 
     Get funding rate history.
 
@@ -136,12 +137,13 @@ def get_funding_rate_history(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     url = f"{base_url}/fapi/v1/fundingRate"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
@@ -177,12 +179,12 @@ def get_funding_rate_info(**kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     url = f"{base_url}/fapi/v1/fundingInfo"
 
-    def send(): return http.get(url, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
@@ -193,7 +195,7 @@ def get_funding_rate_info(**kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_price_ticker_v2(params={}, **kwargs):
+def get_price_ticker_v2(params=None, **kwargs):
     """ 
     Get latest price for a symbol or symbols.
 
@@ -222,12 +224,13 @@ def get_price_ticker_v2(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     url = f"{base_url}/fapi/v2/ticker/price"
 
-    def send(): return http.get(url, params=params, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
