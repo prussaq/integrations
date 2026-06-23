@@ -84,13 +84,12 @@ def get_funding_rate(inst_id, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
     url = f"{base_url}/api/v5/public/funding-rate?instId={inst_id}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -132,14 +131,13 @@ def get_funding_rate_history(inst_id, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
     params['instId'] = inst_id
     url = f"{base_url}/api/v5/public/funding-rate-history"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -180,14 +178,13 @@ def get_mark_price(inst_type, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
     params['instType'] = inst_type
     url = f"{base_url}/api/v5/public/mark-price"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -234,14 +231,13 @@ def get_mark_price_candlesticks(instId, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', okx.BASE_URL)
     timeout = kwargs.get('timeout', okx.TIMEOUT)
     params['instId'] = instId
     url = f"{base_url}/api/v5/market/mark-price-candles"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

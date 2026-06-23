@@ -37,13 +37,12 @@ def get_ticker(symbol, product_type, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
     timeout = kwargs.get('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/ticker?productType={product_type}&symbol={symbol}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -89,7 +88,6 @@ def get_candlestick_data(symbol, product_type, granularity, params={}, **kwargs)
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
     timeout = kwargs.get('timeout', bitget.TIMEOUT)
@@ -98,7 +96,7 @@ def get_candlestick_data(symbol, product_type, granularity, params={}, **kwargs)
     params['productType'] = product_type
     params['granularity'] = granularity
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -137,13 +135,12 @@ def get_next_funding_time(symbol, product_type, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
     timeout = kwargs.get('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/funding-time?productType={product_type}&symbol={symbol}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -185,7 +182,6 @@ def get_historical_funding_rates(symbol, product_type, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
     timeout = kwargs.get('timeout', bitget.TIMEOUT)
@@ -193,7 +189,7 @@ def get_historical_funding_rates(symbol, product_type, params={}, **kwargs):
     params['symbol'] = symbol
     params['productType'] = product_type
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -233,14 +229,13 @@ def get_current_funding_rate(product_type, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
     timeout = kwargs.get('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/current-fund-rate"
     params['productType'] = product_type
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

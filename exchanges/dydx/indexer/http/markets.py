@@ -37,13 +37,12 @@ def get_perpetual_markets(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', dydx.INDEXER_MAINNET_HTTP)
     timeout = kwargs.get('timeout', dydx.TIMEOUT)
     url = f"{base_url}/v4/perpetualMarkets"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -83,14 +82,13 @@ def get_candles(market, resolution, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', dydx.INDEXER_MAINNET_HTTP)
     timeout = kwargs.get('timeout', dydx.TIMEOUT)
     params['resolution'] = resolution
     url = f"{base_url}/v4/candles/perpetualMarkets/{market}"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

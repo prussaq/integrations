@@ -45,7 +45,7 @@ def get_position_info(api, category, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
@@ -99,7 +99,7 @@ def set_leverage(api, category, symbol, *, buy, sell, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
@@ -146,7 +146,7 @@ def set_trading_stop(api, data, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
@@ -207,7 +207,7 @@ def get_closed_PnL(api, category, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
+    headers = kwargs.pop('headers', {})
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)

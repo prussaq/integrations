@@ -36,7 +36,6 @@ def place_order(api, data, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -48,7 +47,7 @@ def place_order(api, data, **kwargs):
 
     def send(): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

@@ -37,7 +37,6 @@ def query_unified_account_assets(api, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -48,7 +47,7 @@ def query_unified_account_assets(api, params={}, **kwargs):
 
     def send(): 
         htx.sign_params(params, api, method, host, path)
-        return http.get(url, params=params, headers=headers, timeout=timeout)
+        return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

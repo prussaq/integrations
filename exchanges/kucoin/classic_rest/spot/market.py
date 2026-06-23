@@ -35,13 +35,12 @@ def get_symbol(symbol, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v2/symbols/{symbol}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(): return http.get(url, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -80,13 +79,12 @@ def get_all_symbols(params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v2/symbols"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -130,7 +128,6 @@ def get_klines(symbol, type, params={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', kucoin.SPOT_BASE_URL)
     timeout = kwargs.get('timeout', kucoin.TIMEOUT)
@@ -138,7 +135,7 @@ def get_klines(symbol, type, params={}, **kwargs):
     params['type'] = type
     url = f"{base_url}/api/v1/market/candles"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(): return http.get(url, params=params, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

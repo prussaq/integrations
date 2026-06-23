@@ -36,7 +36,6 @@ def query_asset_valuation(api, asset, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -49,7 +48,7 @@ def query_asset_valuation(api, asset, **kwargs):
 
     def send(): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=payload, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=payload, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -90,7 +89,6 @@ def query_account_info_isolated(api, data={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -102,7 +100,7 @@ def query_account_info_isolated(api, data={}, **kwargs):
 
     def send(): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -143,7 +141,6 @@ def query_position_info_isolated(api, data={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -155,7 +152,7 @@ def query_position_info_isolated(api, data={}, **kwargs):
 
     def send(): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -202,7 +199,6 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    headers = {}
     http = kwargs.get('session', requests)
     base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.get('timeout', htx.TIMEOUT)
@@ -215,7 +211,7 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, **kwargs):
 
     def send(): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
