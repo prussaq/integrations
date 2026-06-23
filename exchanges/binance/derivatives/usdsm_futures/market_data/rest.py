@@ -137,7 +137,6 @@ def get_funding_rate_history(params=None, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    if params is None: params = {}
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', binance.TIMEOUT)
@@ -224,7 +223,6 @@ def get_price_ticker_v2(params=None, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    if params is None: params = {}
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', binance.TIMEOUT)
