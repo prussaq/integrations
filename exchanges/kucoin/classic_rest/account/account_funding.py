@@ -38,7 +38,6 @@ def get_futures_account(api, params=None, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    if params is None: params = {}
     headers = kwargs.pop('headers', {})
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)

@@ -80,7 +80,6 @@ def query_batch_funding_rate(params=None, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    if params is None: params = {}
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', htx.TIMEOUT)
@@ -179,7 +178,6 @@ def query_contract_info(params=None, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    if params is None: params = {}
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', htx.TIMEOUT)
@@ -225,7 +223,6 @@ def query_contract_elements(params=None, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    if params is None: params = {}
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', htx.TIMEOUT)
