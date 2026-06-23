@@ -9,7 +9,7 @@ import integrations.shared.exchange.htx as htx
 logger = logging.getLogger(__name__)
 
 
-def query_asset_valuation(api, asset, *, headers={}, **kwargs):
+def query_asset_valuation(api, asset, **kwargs):
     """ 
     Query asset valuation (balance).
 
@@ -18,15 +18,14 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_params` api parameter.
         asset (str): The valuation according to the certain fiat currency; defaults to BTC.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -37,9 +36,9 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'POST'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_balance_valuation'
@@ -47,9 +46,9 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
     params = {}
     payload = {"valuation_asset": asset}
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=payload, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=payload, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -62,7 +61,7 @@ def query_asset_valuation(api, asset, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
+def query_account_info_isolated(api, data=None, **kwargs):
     """ 
     Query user’s account information (isolated).
 
@@ -72,15 +71,14 @@ def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_params` api parameter.
         data (dict): 
             contract_code (str): Contract code (case-insensitive), e.g. BTC-USDT.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -91,18 +89,18 @@ def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'POST'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_account_info'
     url = f"{base_url}{path}"
     params = {}
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -115,7 +113,7 @@ def query_account_info_isolated(api, data={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
+def query_position_info_isolated(api, data=None, **kwargs):
     """ 
     Query user’s position information (isolated).
 
@@ -125,15 +123,14 @@ def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_params` api parameter.
         data (dict): 
             contract_code (str): Contract code (case-insensitive), e.g. BTC-USDT.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -144,18 +141,18 @@ def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'POST'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v1/swap_position_info'
     url = f"{base_url}{path}"
     params = {}
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -168,7 +165,7 @@ def query_position_info_isolated(api, data={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def query_account_financial_records_isolated(api, mar_acct, data={}, *, headers={}, **kwargs):
+def query_account_financial_records_isolated(api, mar_acct, data=None, **kwargs):
     """ 
     Query account financial records (isolated) (New).
 
@@ -184,15 +181,14 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, *, headers=
             end_time (long): Query end time, query data by creation time.
             direct (str): Search direct.
             from_id (long): Search query_id to begin with.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -203,19 +199,20 @@ def query_account_financial_records_isolated(api, mar_acct, data={}, *, headers=
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', htx.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', htx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', htx.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', htx.TIMEOUT)
     method = 'POST'
     host = base_url.replace('https://', '')
     path = '/linear-swap-api/v3/swap_financial_record'
     url = f"{base_url}{path}"
+    if data is None: data = {}
     params = {}
     data['mar_acct'] = mar_acct
 
-    def send(): 
+    def send(settings): 
         htx.sign_params(params, api, method, host, path)
-        return http.post(url, params=params, json=data, headers=headers, timeout=timeout)
+        return http.post(url, params=params, json=data, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

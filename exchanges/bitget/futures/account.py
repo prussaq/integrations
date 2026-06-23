@@ -10,7 +10,7 @@ import integrations.shared.exchange.bitget as bitget
 logger = logging.getLogger(__name__)
 
 
-def get_single_account(api, symbol, product_type, margin_coin, *, headers={}, **kwargs):
+def get_single_account(api, symbol, product_type, margin_coin, **kwargs):
     """ 
     Get account details with the given 'marginCoin' and 'productType'.
 
@@ -21,15 +21,14 @@ def get_single_account(api, symbol, product_type, margin_coin, *, headers={}, **
         symbol (str): Trading pair.
         product_type (str): Product type: USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
         margin_coin (str): Margin coin.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -40,18 +39,19 @@ def get_single_account(api, symbol, product_type, margin_coin, *, headers={}, **
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     method = 'GET'
     params = {"symbol": symbol, "productType": product_type, "marginCoin": margin_coin}
     query = urlencode(sorted(params.items(), key=lambda d: d[0]))
     path = '/api/v2/mix/account/account' + (f"?{query}" if query else '')
     url = base_url + path
 
-    def send(): 
+    def send(settings): 
         bitget.sign_headers(headers, api, method, path)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

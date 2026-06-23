@@ -9,7 +9,7 @@ import integrations.shared.exchange.binance as binance
 logger = logging.getLogger(__name__)
 
 
-def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
+def get_kline(symbol, interval, params=None, **kwargs):
     """ 
     Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
     
@@ -23,15 +23,14 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
             endTime (long): The end timestamp (ms).
             timeZone (str): Default: 0 (UTC)
             limit (int): Default: 500; Maximum: 1000.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -42,14 +41,15 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.SPOT_PUBLIC_MARKET_DATA_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.SPOT_PUBLIC_MARKET_DATA_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     params['symbol'] = symbol
     params['interval'] = interval
     url = f"{base_url}/api/v3/klines"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)

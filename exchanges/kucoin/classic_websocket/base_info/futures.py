@@ -10,22 +10,21 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def get_public_token(*, headers={},**kwargs):
+def get_public_token(**kwargs):
     """ 
     Get public futures websocket token and additional info.
 
     Link: 
         https://www.kucoin.com/docs-new/websocket-api/base-info/get-public-token-futures
     Args:
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -36,12 +35,12 @@ def get_public_token(*, headers={},**kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v1/bullet-public"
 
-    def send(): return http.post(url, headers=headers, timeout=timeout)
+    def send(settings): return http.post(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -53,7 +52,7 @@ def get_public_token(*, headers={},**kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_private_token(api, *, headers={}, **kwargs):
+def get_private_token(api, **kwargs):
     """ 
     Get private futures websocket token and additional info.
 
@@ -61,15 +60,14 @@ def get_private_token(api, *, headers={}, **kwargs):
         https://www.kucoin.com/docs-new/websocket-api/base-info/get-private-token-futures
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -80,16 +78,17 @@ def get_private_token(api, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'POST'
     endpoint = '/api/v1/bullet-private'
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint)
-        return http.post(url, headers=headers, timeout=timeout)
+        return http.post(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

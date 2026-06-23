@@ -10,7 +10,7 @@ import integrations.shared.exchange.bitget as bitget
 logger = logging.getLogger(__name__)
 
 
-def get_ticker(symbol, product_type, *, headers={}, **kwargs):
+def get_ticker(symbol, product_type, **kwargs):
     """ 
     Get ticker data of the given 'productType' and 'symbol'.
 
@@ -19,15 +19,14 @@ def get_ticker(symbol, product_type, *, headers={}, **kwargs):
     Args:
         symbol (str): Trading pair.
         product_type (str): Product type: USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -38,12 +37,12 @@ def get_ticker(symbol, product_type, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/ticker?productType={product_type}&symbol={symbol}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -55,7 +54,7 @@ def get_ticker(symbol, product_type, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_candlestick_data(symbol, product_type, granularity, params={}, *, headers={}, **kwargs):
+def get_candlestick_data(symbol, product_type, granularity, params=None, **kwargs):
     """ 
     By default, 100 records are returned. If there is no data, an empty array is returned. 
     The queryable data history varies depending on the k-line granularity.
@@ -71,15 +70,14 @@ def get_candlestick_data(symbol, product_type, granularity, params={}, *, header
             endTime (int): The end time is to query the k-lines before this time (ms).
             kLineType (str): Candlestick chart types: MARKET tick; MARK mark; INDEX index; MARKET by default.
             limit (int): Default: 100, maximum: 1000
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -90,15 +88,16 @@ def get_candlestick_data(symbol, product_type, granularity, params={}, *, header
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/candles"
     params['symbol'] = symbol
     params['productType'] = product_type
     params['granularity'] = granularity
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -110,7 +109,7 @@ def get_candlestick_data(symbol, product_type, granularity, params={}, *, header
     return execute_request(send, read, check, kwargs)
 
 
-def get_next_funding_time(symbol, product_type, *, headers={}, **kwargs):
+def get_next_funding_time(symbol, product_type, **kwargs):
     """ 
     Get the next settlement time of the contract and the settlement period of the contract
 
@@ -119,15 +118,14 @@ def get_next_funding_time(symbol, product_type, *, headers={}, **kwargs):
     Args:
         symbol (str): Trading pair.
         product_type (str): Product type: USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -138,12 +136,12 @@ def get_next_funding_time(symbol, product_type, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/funding-time?productType={product_type}&symbol={symbol}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -155,7 +153,7 @@ def get_next_funding_time(symbol, product_type, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_historical_funding_rates(symbol, product_type, params={}, *, headers={}, **kwargs):
+def get_historical_funding_rates(symbol, product_type, params=None, **kwargs):
     """ 
     Get the historical funding rate of the contract
 
@@ -167,15 +165,14 @@ def get_historical_funding_rates(symbol, product_type, params={}, *, headers={},
         params (dict):
             pageSize (int): Number of queries: Default: 20, maximum: 100.
             pageNo (int): Page number.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -186,14 +183,15 @@ def get_historical_funding_rates(symbol, product_type, params={}, *, headers={},
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/history-fund-rate"
     params['symbol'] = symbol
     params['productType'] = product_type
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -205,7 +203,7 @@ def get_historical_funding_rates(symbol, product_type, params={}, *, headers={},
     return execute_request(send, read, check, kwargs)
 
 
-def get_current_funding_rate(product_type, params={}, *, headers={}, **kwargs):
+def get_current_funding_rate(product_type, params=None, **kwargs):
     """ 
     Get the current funding rate of the contract
 
@@ -215,15 +213,14 @@ def get_current_funding_rate(product_type, params={}, *, headers={}, **kwargs):
         product_type (str): Product type: USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
         params (dict):
             symbol (str): Trading pair.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -234,13 +231,13 @@ def get_current_funding_rate(product_type, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.get('timeout', bitget.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
+    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
     url = f"{base_url}/api/v2/mix/market/current-fund-rate"
     params['productType'] = product_type
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

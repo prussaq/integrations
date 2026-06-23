@@ -9,7 +9,7 @@ import integrations.shared.exchange.dydx as dydx
 logger = logging.getLogger(__name__)
 
 
-def get_perpetual_markets(params={}, *, headers={}, **kwargs):
+def get_perpetual_markets(params=None, **kwargs):
     """ 
     Retrieves perpetual markets..
 
@@ -19,15 +19,14 @@ def get_perpetual_markets(params={}, *, headers={}, **kwargs):
         params (dict):
             market (str): The specific market ticker to retrieve. If not provided, all markets are returned.
             limit (int): Maximum number of asset positions to return in the response.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -38,12 +37,12 @@ def get_perpetual_markets(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', dydx.INDEXER_MAINNET_HTTP)
-    timeout = kwargs.get('timeout', dydx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', dydx.INDEXER_MAINNET_HTTP)
+    timeout = kwargs.pop('timeout', dydx.TIMEOUT)
     url = f"{base_url}/v4/perpetualMarkets"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -52,7 +51,7 @@ def get_perpetual_markets(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
+def get_candles(market, resolution, params=None, **kwargs):
     """ 
     Retrieves candle data for a specific perpetual market.
 
@@ -65,15 +64,14 @@ def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
             limit (int): The maximum number of candles to retrieve.
             fromISO (str): The start timestamp in ISO format.
             toISO (str): The end timestamp in ISO format.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -84,13 +82,14 @@ def get_candles(market, resolution, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', dydx.INDEXER_MAINNET_HTTP)
-    timeout = kwargs.get('timeout', dydx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', dydx.INDEXER_MAINNET_HTTP)
+    timeout = kwargs.pop('timeout', dydx.TIMEOUT)
+    if params is None: params = {}
     params['resolution'] = resolution
     url = f"{base_url}/v4/candles/perpetualMarkets/{market}"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

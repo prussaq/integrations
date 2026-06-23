@@ -38,11 +38,11 @@ def get_account_assets(api, **kwargs):
     Args:
         api (dict): API credentials
         kwargs:
-            timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -54,12 +54,12 @@ def get_account_assets(api, **kwargs):
         Makes HTTP request by `curl_cffi` module.
     """
     url = f"{FUTURES_BASE_URL}/api/v1/private/account/assets"
-    headers = {}
-    timeout = kwargs.get('timeout', TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    timeout = kwargs.pop('timeout', TIMEOUT)
 
-    def send(): 
-        sign_headers(headers, api)
-        return cffi_requests.get(url, headers=headers, timeout=timeout)
+    def send(settings): 
+        sign_headers(headers, api, data)
+        return cffi_requests.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -82,8 +82,8 @@ def place_order(api, data, **kwargs):
         api (dict): WEB API credentials.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         kwargs:
-            timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -95,18 +95,20 @@ def place_order(api, data, **kwargs):
         Makes HTTP request by `curl_cffi` module.
     """
     url = f"{FUTURES_BASE_URL}/api/v1/private/order/create"
-    headers = {'Content-Type': 'application/json'}
-    timeout = kwargs.get('timeout', TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    headers['Content-Type'] = 'application/json'
+    timeout = kwargs.pop('timeout', TIMEOUT)
 
+    full = kwargs.pop('full', False)
     rate_limiter.acquire('mexc.futures.web.place_order') 
     sign_headers(headers, api, data)
-    response = cffi_requests.post(url, headers=headers, json=data, timeout=timeout)
+    response = cffi_requests.post(url, headers=headers, json=data, timeout=timeout, **kwargs)
     body = response.json()
     if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
     if not body.get('success'): 
         raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
             response=response, body=body)
-    if kwargs.get('full'): return response, body
+    if full: return response, body
     return body
 
 
@@ -120,8 +122,8 @@ def place_TP_SL_order(api, data, **kwargs):
         api (dict): WEB API credentials.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
         kwargs:
-            timeout (float | (float, float)): HTTP timeout forwarded to `curl_cffi.requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -133,12 +135,13 @@ def place_TP_SL_order(api, data, **kwargs):
         Makes HTTP request by `curl_cffi` module.
     """
     url = f"{FUTURES_BASE_URL}/api/v1/private/stoporder/place"
-    headers = {'Content-Type': 'application/json'}
-    timeout = kwargs.get('timeout', TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    headers['Content-Type'] = 'application/json'
+    timeout = kwargs.pop('timeout', TIMEOUT)
 
-    def send(): 
+    def send(settings): 
         sign_headers(headers, api, data)
-        return cffi_requests.get(url, headers=headers, json=data, timeout=timeout)
+        return cffi_requests.get(url, headers=headers, json=data, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -147,4 +150,5 @@ def place_TP_SL_order(api, data, **kwargs):
                 response=response, body=body)
 
     rate_limiter.acquire('mexc.futures.web.place_TP_SL_order') 
-    return execute_request(send, read, check, retries=1)
+    kwargs['retries'] = 1
+    return execute_request(send, read, check, kwargs)

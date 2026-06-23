@@ -9,22 +9,21 @@ import integrations.shared.exchange.binance as binance
 logger = logging.getLogger(__name__)
 
 
-def get_exchange_info(*, headers={}, **kwargs):
+def get_exchange_info(**kwargs):
     """ 
     Current exchange trading rules and symbol information.
 
     Link: 
         https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information
     Args:
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -35,12 +34,12 @@ def get_exchange_info(*, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     url = f"{base_url}/fapi/v1/exchangeInfo"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
@@ -51,7 +50,7 @@ def get_exchange_info(*, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
+def get_kline(symbol, interval, params=None, **kwargs):
     """ 
     Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
 
@@ -67,15 +66,14 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
             startTime (long): The start timestamp (ms).
             endTime (long): The end timestamp (ms).
             limit (int): Default 500; max 1500.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -86,14 +84,15 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     params['symbol'] = symbol
     params['interval'] = interval
     url = f"{base_url}/fapi/v1/klines"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
@@ -104,7 +103,7 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_history(params={}, *, headers={}, **kwargs):
+def get_funding_rate_history(params=None, **kwargs):
     """ 
     Get funding rate history.
 
@@ -120,15 +119,14 @@ def get_funding_rate_history(params={}, *, headers={}, **kwargs):
             startTime (long): Timestamp in ms to get funding rate from INCLUSIVE.
             endTime (long): Timestamp in ms to get funding rate until INCLUSIVE.
             limit (int): Default 100; max 1000
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -139,12 +137,12 @@ def get_funding_rate_history(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     url = f"{base_url}/fapi/v1/fundingRate"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
@@ -155,22 +153,21 @@ def get_funding_rate_history(params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_info(*, headers={}, **kwargs):
+def get_funding_rate_info(**kwargs):
     """ 
     Query funding rate info for symbols that had FundingRateCap/ FundingRateFloor / fundingIntervalHours adjustment.
 
     Link: 
         https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-Info
     Args:
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -181,12 +178,12 @@ def get_funding_rate_info(*, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     url = f"{base_url}/fapi/v1/fundingInfo"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)
@@ -197,7 +194,7 @@ def get_funding_rate_info(*, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_price_ticker_v2(params={}, *, headers={}, **kwargs):
+def get_price_ticker_v2(params=None, **kwargs):
     """ 
     Get latest price for a symbol or symbols.
 
@@ -208,15 +205,14 @@ def get_price_ticker_v2(params={}, *, headers={}, **kwargs):
     Args:
         params (dict): 
             symbol (str): Symbol name.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -227,12 +223,12 @@ def get_price_ticker_v2(params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', binance.USDS_FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', binance.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', binance.USDS_FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', binance.TIMEOUT)
     url = f"{base_url}/fapi/v2/ticker/price"
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, (dict, list)): raise ApiError("unexpected response type", response=response, body=body)

@@ -11,7 +11,7 @@ import integrations.shared.exchange.okx as okx
 logger = logging.getLogger(__name__)
 
 
-def get_ticker(inst_id, *, headers={}, **kwargs):
+def get_ticker(inst_id, **kwargs):
     """ 
     Retrieve the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours. 
     Best ask price may be lower than the best bid price during the pre-open period.
@@ -20,12 +20,11 @@ def get_ticker(inst_id, *, headers={}, **kwargs):
         https://www.okx.com/docs-v5/en/#order-book-trading-market-data-get-ticker
     Args:
         inst_id (dict): Instrument ID, e.g. BTC-USD-SWAP
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -36,12 +35,12 @@ def get_ticker(inst_id, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     url = f"{base_url}/api/v5/market/ticker?instId={inst_id}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
