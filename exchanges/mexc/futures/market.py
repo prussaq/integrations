@@ -10,7 +10,7 @@ import integrations.shared.exchange.mexc as mexc
 logger = logging.getLogger(__name__)
 
 
-def get_contract_info(params={}, **kwargs):
+def get_contract_info(params=None, **kwargs):
     """ 
     Get information about all contracts or specified one.
 
@@ -41,6 +41,7 @@ def get_contract_info(params={}, **kwargs):
     base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/detail"
+    if params is None: params = {}
 
     def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
@@ -140,7 +141,7 @@ def get_funding_rate(symbol, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_candlestick_data(symbol, params={}, **kwargs):
+def get_candlestick_data(symbol, params=None, **kwargs):
     """ 
     Get candlestick data of the contract. Max 2000 entries. Default interval Min1.
 
@@ -174,6 +175,7 @@ def get_candlestick_data(symbol, params={}, **kwargs):
     base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/kline/{symbol}"
+    if params is None: params = {}
 
     def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
@@ -187,7 +189,7 @@ def get_candlestick_data(symbol, params={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_ticker(params={}, **kwargs):
+def get_ticker(params=None, **kwargs):
     """ 
     Get ticker for all contracts or specified one.
 
@@ -218,6 +220,7 @@ def get_ticker(params={}, **kwargs):
     base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/ticker"
+    if params is None: params = {}
 
     def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()

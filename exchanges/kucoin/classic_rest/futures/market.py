@@ -138,7 +138,7 @@ def get_ticker(symbol, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_klines(symbol, granularity, params={}, **kwargs):
+def get_klines(symbol, granularity, params=None, **kwargs):
     """ 
     Get the symbol’s candlestick chart data. Max 500 pieces per page. 
     May be incomplete if there are no ticks within interval.
@@ -172,6 +172,7 @@ def get_klines(symbol, granularity, params={}, **kwargs):
     http = kwargs.pop('session', requests)
     base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
+    if params is None: params = {}
     params['symbol'] = symbol
     params['granularity'] = granularity
     url = f"{base_url}/api/v1/kline/query?{urlencode(params)}"

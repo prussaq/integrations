@@ -61,7 +61,7 @@ def get_transferable_amount_unified(api, coin, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_transaction_log(api, params={}, **kwargs):
+def get_transaction_log(api, params=None, **kwargs):
     """ 
     Query for transaction logs in your Unified account. It supports up to 2 years worth of data.
 
@@ -108,6 +108,7 @@ def get_transaction_log(api, params={}, **kwargs):
     base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
     timeout = kwargs.pop('timeout', bybit.TIMEOUT)
+    if params is None: params = {}
     query = urlencode(params)
     url = f"{base_url}/v5/account/transaction-log?{query}"
 
