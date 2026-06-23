@@ -27,7 +27,7 @@ api = get_api(secrets, config.KUCOIN_API_PATH)
 # data = positions.get_positions_history(api, {'symbol':'GOATUSDTM'})
 # data = spot_market.get_all_symbols({'market':'ETF'})
 # data = spot_market.get_symbol('BTC-USDT')
-# data = spot_market.get_klines('BTC-USDT', '1day')
+data = spot_market.get_klines('BTC-USDT', '1day')
 
 
 print('data:', data)

@@ -41,7 +41,6 @@ def get_contract_info(params=None, **kwargs):
     base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/detail"
-    if params is None: params = {}
 
     def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
@@ -175,7 +174,6 @@ def get_candlestick_data(symbol, params=None, **kwargs):
     base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/kline/{symbol}"
-    if params is None: params = {}
 
     def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
@@ -220,7 +218,6 @@ def get_ticker(params=None, **kwargs):
     base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
     timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     url = f"{base_url}/api/v1/contract/ticker"
-    if params is None: params = {}
 
     def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
