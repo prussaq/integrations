@@ -11,7 +11,7 @@ import integrations.shared.exchange.okx as okx
 logger = logging.getLogger(__name__)
 
 
-def get_balance(api, params={}, *, headers={}, **kwargs):
+def get_balance(api, params=None, **kwargs):
     """ 
     Retrieve a list of assets (with non-zero balance), remaining balance, and available amount in the trading account.
 
@@ -21,15 +21,14 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         params (dict):
             ccy (str): Single currency or multiple currencies (no more than 20) separated with comma, e.g. BTC or BTC,ETH.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -40,16 +39,18 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    if params is None: params = {}
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v5/account/balance'+ (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -61,7 +62,7 @@ def get_balance(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_positions(api, params={}, *, headers={}, **kwargs):
+def get_positions(api, params=None, **kwargs):
     """ 
     Retrieve information on your positions. When the account is in net mode, net positions will be displayed, 
     and when the account is in long/short mode, long or short positions will be displayed. 
@@ -75,15 +76,14 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
             instType (str): Instrument type: MARGIN, SWAP, FUTURES, OPTION
             instId (str): Instrument ID, e.g. BTC-USDT-SWAP. 
             posId (str): Single position ID or multiple position IDs (no more than 20) separated with comma.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -94,16 +94,18 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    if params is None: params = {}
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v5/account/positions'+ (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -115,7 +117,7 @@ def get_positions(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_positions_history(api, params={}, *, headers={}, **kwargs):
+def get_positions_history(api, params=None, **kwargs):
     """ 
     Retrieve the updated position data for the last 3 months. 
     Return in reverse chronological order using utime. 
@@ -140,15 +142,14 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
             before (str): Pagination of data to return records newer than the requested uTime, Unix timestamp format in milliseconds, e.g. 1597026383085
             limit (str): Number of results per request. The maximum is 100. The default is 100. 
                 All records that have the same uTime will be returned at the current request
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -159,16 +160,18 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    if params is None: params = {}
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v5/account/positions-history'+ (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -180,7 +183,7 @@ def get_positions_history(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
+def get_bills_details_7d(api, params=None, **kwargs):
     """ 
     Retrieve the bills of the account. The bill refers to all transaction records 
     that result in changing the balance of an account. Pagination is supported, 
@@ -204,15 +207,14 @@ def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
             begin (str): Filter with a begin timestamp ts. Unix timestamp format in milliseconds, e.g. 1597026383085
             end (str): Filter with an end timestamp ts. Unix timestamp format in milliseconds, e.g. 1597026383085
             limit (str): Number of results per request. The maximum is 100. The default is 100.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -223,16 +225,18 @@ def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    if params is None: params = {}
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'GET'
     endpoint = '/api/v5/account/bills'+ (f"?{urlencode(params)}" if params else '')
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -244,7 +248,7 @@ def get_bills_details_7d(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
+def set_leverage(api, lever, mgn_mode, data=None, **kwargs):
     """ 
     There are 10 different scenarios for leverage setting: see docs at `Link`
 
@@ -258,15 +262,14 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
             instId (str): Instrument ID. 
             ccy (str): Currency.
             posSide (str): Position side: long short
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -277,9 +280,11 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    if data is None: data = {}
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'POST'
     endpoint = '/api/v5/account/set-leverage'
     url = base_url + endpoint
@@ -288,9 +293,9 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -302,7 +307,7 @@ def set_leverage(api, lever, mgn_mode, data={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def increase_decrease_margin(api, data, *, headers={}, **kwargs):
+def increase_decrease_margin(api, data, **kwargs):
     """ 
     Increase or decrease the margin of the isolated position. Margin reduction may result in the change of the actual leverage.
 
@@ -316,12 +321,11 @@ def increase_decrease_margin(api, data, *, headers={}, **kwargs):
             type (str): add: add margin; reduce: reduce margin
             amt (str): Amount to be increased or decreased.
             ccy (str): Currency. Applicable to isolated MARGIN orders.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -332,18 +336,19 @@ def increase_decrease_margin(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'POST'
     endpoint = '/api/v5/account/position/margin-balance'
     url = base_url + endpoint
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -351,5 +356,6 @@ def increase_decrease_margin(api, data, *, headers={}, **kwargs):
         if code != '0': 
             raise ApiError(f"OKX returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    rate_limiter.acquire('okx.api.trading_account.rest.increase_decrease_margin') 
-    return execute_request(send, read, check, retries=1)
+    rate_limiter.acquire('okx.api.trading_account.rest.increase_decrease_margin')
+    kwargs['retries'] = 1
+    return execute_request(send, read, check, kwargs)

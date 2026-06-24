@@ -11,7 +11,7 @@ import integrations.shared.exchange.okx as okx
 logger = logging.getLogger(__name__)
 
 
-def place_algo_order(api, order, *, headers={}, **kwargs):
+def place_algo_order(api, order, **kwargs):
     """ 
     The algo order includes trigger order, oco order, chase order, conditional order, twap order and trailing order.
 
@@ -20,12 +20,11 @@ def place_algo_order(api, order, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         order (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -36,18 +35,19 @@ def place_algo_order(api, order, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', okx.BASE_URL)
-    timeout = kwargs.get('timeout', okx.TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', okx.BASE_URL)
+    timeout = kwargs.pop('timeout', okx.TIMEOUT)
     method = 'POST'
     endpoint = '/api/v5/trade/order-algo'
     url = base_url + endpoint
     payload = json.dumps(order, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         okx.sign_headers(headers, api, method, endpoint, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

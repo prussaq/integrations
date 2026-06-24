@@ -10,7 +10,7 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def get_current_funding_rate(symbol, *, headers={}, **kwargs):
+def get_current_funding_rate(symbol, **kwargs):
     """ 
     Get current funding rate for the contract.
 
@@ -18,15 +18,14 @@ def get_current_funding_rate(symbol, *, headers={}, **kwargs):
         https://www.kucoin.com/docs-new/rest/futures-trading/funding-fees/get-current-funding-rate
     Args:
         symbol (str): Symbol of the contract.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -37,12 +36,12 @@ def get_current_funding_rate(symbol, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v1/funding-rate/{symbol}/current"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -54,7 +53,7 @@ def get_current_funding_rate(symbol, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
+def get_public_funding_history(symbol, from_, to, **kwargs):
     """ 
     Get public funding history for the contract.
 
@@ -64,15 +63,14 @@ def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
         symbol (str): Symbol of the contract.
         from_ (int): Begin time (milliseconds).
         to (int): End time (milliseconds).
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -83,12 +81,12 @@ def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     url = f"{base_url}/api/v1/contract/funding-rates?symbol={symbol}&from={from_}&to={to}"
 
-    def send(): return http.get(url, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -100,7 +98,7 @@ def get_public_funding_history(symbol, from_, to, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs):
+def get_private_funding_history(api, symbol, params=None, **kwargs):
     """ 
     Get private funding history for the contract. Maximum for 3 months.
 
@@ -116,15 +114,14 @@ def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs)
             offset (int): Start offset.
             forward (bool): 
             maxCount (int): Maximum records. Default: 10
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -135,17 +132,19 @@ def get_private_funding_history(api, symbol, params={}, *, headers={}, **kwargs)
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    if params is None: params = {}
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'GET'
     params['symbol'] = symbol
     endpoint = f"/api/v1/funding-history?{urlencode(params)}"
     url = base_url + endpoint
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

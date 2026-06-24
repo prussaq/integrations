@@ -10,7 +10,7 @@ import integrations.shared.exchange.bybit as bybit
 logger = logging.getLogger(__name__)
 
 
-def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
+def get_kline(symbol, interval, params=None, **kwargs):
     """ 
     Query for historical klines (also known as candles/candlesticks). 
     Charts are returned in groups based on the requested interval.
@@ -25,15 +25,14 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
             start (int): The start timestamp (ms).
             end (int): The end timestamp (ms).
             limit (int): Limit for data size per page. [1, 1000]. Default: 200
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -44,14 +43,15 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/market/kline"
     params['symbol'] = symbol
     params['interval'] = interval
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -63,7 +63,7 @@ def get_kline(symbol, interval, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_instruments_info(category, params={}, *, headers={}, **kwargs):
+def get_instruments_info(category, params=None, **kwargs):
     """ 
     Query for the instrument specification of online trading pairs. 
 
@@ -78,15 +78,14 @@ def get_instruments_info(category, params={}, *, headers={}, **kwargs):
             baseCoin (str): Base coin, uppercase only.
             limit (int): Limit for data size per page. [1, 1000]. Default: 500
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set.
-        headers (dict): HTTP headers.
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -97,13 +96,14 @@ def get_instruments_info(category, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/market/instruments-info"
     params['category'] = category
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -115,7 +115,7 @@ def get_instruments_info(category, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_tickers(category, params={}, *, headers={}, **kwargs):
+def get_tickers(category, params=None, **kwargs):
     """ 
     Query for the latest price snapshot, best bid/ask price, and trading volume in the last 24 hours.
 
@@ -127,15 +127,14 @@ def get_tickers(category, params={}, *, headers={}, **kwargs):
             symbol (str): Symbol name, like BTCUSDT, uppercase only.
             baseCoin (str): Base coin, uppercase only. Apply to option only.
             expDate (str): Expiry date. e.g., 25DEC22. Apply to option only.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -146,13 +145,14 @@ def get_tickers(category, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/market/tickers"
     params['category'] = category
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -164,7 +164,7 @@ def get_tickers(category, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwargs):
+def get_funding_rate_history(category, symbol, params=None, **kwargs):
     """ 
     Query for historical funding rates.
 
@@ -177,15 +177,14 @@ def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwarg
             startTime (int): The start timestamp (ms).
             endTime (int): The end timestamp (ms).
             limit (int): Limit for data size per page. [1, 200]. Default: 200
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -196,14 +195,15 @@ def get_funding_rate_history(category, symbol, params={}, *, headers={}, **kwarg
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    if params is None: params = {}
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/market/funding/history"
     params['category'] = category
     params['symbol'] = symbol
 
-    def send(): return http.get(url, params=params, headers=headers, timeout=timeout)
+    def send(settings): return http.get(url, params=params, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

@@ -11,7 +11,7 @@ import integrations.shared.exchange.kucoin as kucoin
 logger = logging.getLogger(__name__)
 
 
-def add_order(api, data, *, headers={}, **kwargs):
+def add_order(api, data, **kwargs):
     """ 
     Place futures order.
 
@@ -20,12 +20,11 @@ def add_order(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -36,28 +35,30 @@ def add_order(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'POST'
     endpoint = f"/api/v1/orders"
     url = base_url + endpoint
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
+    full = kwargs.pop('full', False)
     rate_limiter.acquire('kucoin.classic_rest.futures.orders.add_order')
     kucoin.sign_headers(headers, api, method, endpoint, payload)
-    response = http.post(url, data=payload, headers=headers, timeout=timeout)
+    response = http.post(url, data=payload, headers=headers, timeout=timeout, **kwargs)
     body = response.json()
     if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
     code = body.get('code')
     if code != '200000': 
         raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
-    if kwargs.get('full'): return response, body
+    if full: return response, body
     return body
 
 
-def add_TP_SL_order(api, data, *, headers={}, **kwargs):
+def add_TP_SL_order(api, data, **kwargs):
     """ 
     Place take profit and stop loss order.
 
@@ -66,12 +67,11 @@ def add_TP_SL_order(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): HTTP headers.
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -82,18 +82,19 @@ def add_TP_SL_order(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', kucoin.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', kucoin.TIMEOUT)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', kucoin.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', kucoin.TIMEOUT)
     method = 'POST'
     endpoint = f"/api/v1/st-orders"
     url = base_url + endpoint
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(): 
+    def send(settings): 
         kucoin.sign_headers(headers, api, method, endpoint, payload)
-        return http.post(url, data=payload, headers=headers, timeout=timeout)
+        return http.post(url, data=payload, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -101,5 +102,6 @@ def add_TP_SL_order(api, data, *, headers={}, **kwargs):
         if code != '200000': 
             raise ApiError(f"KuCoin returned code {code}: {body.get('msg')}", response=response, body=body)
 
-    rate_limiter.acquire('kucoin.classic_rest.futures.orders.add_TP_SL_order') 
-    return execute_request(send, read, check, retries=1)
+    rate_limiter.acquire('kucoin.classic_rest.futures.orders.add_TP_SL_order')
+    kwargs['retries'] = 1
+    return execute_request(send, read, check, kwargs)

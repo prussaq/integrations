@@ -10,7 +10,7 @@ import integrations.shared.exchange.bybit as bybit
 logger = logging.getLogger(__name__)
 
 
-def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
+def get_transferable_amount_unified(api, coin, **kwargs):
     """ 
     Query the available amount to transfer of a specific coin in the Unified wallet.
 
@@ -20,16 +20,14 @@ def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
         api (dict): API credentials. See `sign_headers` api parameter.
         coin (str): Coin name, uppercase only.
             Supports up to 20 coins per request, use comma to separate: BTC,USDC,USDT,SOL
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -40,17 +38,18 @@ def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     params = {'coinName': coin}
     query = urlencode(params)
     url = f"{base_url}/v5/account/withdrawal?{query}"
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window, query)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -62,7 +61,7 @@ def get_transferable_amount_unified(api, coin, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_transaction_log(api, params={}, *, headers={}, **kwargs):
+def get_transaction_log(api, params=None, **kwargs):
     """ 
     Query for transaction logs in your Unified account. It supports up to 2 years worth of data.
 
@@ -86,16 +85,14 @@ def get_transaction_log(api, params={}, *, headers={}, **kwargs):
             endTime (int): The end timestamp (ms)
             limit (int): Limit for data size per page. [1, 50]. Default: 20
             cursor (str): Cursor. Use the nextPageCursor token from the response to retrieve the next page of the result set
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -106,16 +103,18 @@ def get_transaction_log(api, params={}, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
+    if params is None: params = {}
     query = urlencode(params)
     url = f"{base_url}/v5/account/transaction-log?{query}"
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window, query)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
@@ -127,7 +126,7 @@ def get_transaction_log(api, params={}, *, headers={}, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
-def get_account_info(api, *, headers={}, **kwargs):
+def get_account_info(api, **kwargs):
     """ 
     Query the account information, like margin mode, account mode, etc.
 
@@ -135,16 +134,14 @@ def get_account_info(api, *, headers={}, **kwargs):
         https://bybit-exchange.github.io/docs/v5/account/account-info
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             retries (int): Number of retry attempts.
             delay (float): Initial retry delay in seconds.
             backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -155,15 +152,16 @@ def get_account_info(api, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/account/info"
 
-    def send(): 
+    def send(settings): 
         bybit.sign_headers(headers, api, recv_window)
-        return http.get(url, headers=headers, timeout=timeout)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
     def read(response): return response.json()
     def check(response, body):
         if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)

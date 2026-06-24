@@ -11,7 +11,7 @@ import integrations.shared.exchange.bybit as bybit
 logger = logging.getLogger(__name__)
 
 
-def place_order(api, data, *, headers={}, **kwargs):
+def place_order(api, data, **kwargs):
     """
     Place order for Spot, Margin trading, USDT/USDC perpetual, USDT/USDC futures, Inverse Futures and Options.
 
@@ -20,13 +20,11 @@ def place_order(api, data, *, headers={}, **kwargs):
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
-        headers (dict): 
-            X-BAPI-RECV-WINDOW (str): Exchange receive window (ms), should be tuned with `timeout` in mind. 
         kwargs:
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            timeout (float | (float, float)): HTTP timeout forwarded to `requests` (connect/read).
             full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
     Returns:
         dict: Parsed response body by default.
         (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
@@ -37,22 +35,24 @@ def place_order(api, data, *, headers={}, **kwargs):
     Notes: 
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', bybit.BASE_URL)
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', bybit.BASE_URL)
     recv_window = headers.get('X-BAPI-RECV-WINDOW', bybit.RECV_WINDOW)
-    timeout = kwargs.get('timeout', bybit.TIMEOUT)
+    timeout = kwargs.pop('timeout', bybit.TIMEOUT)
     url = f"{base_url}/v5/order/create"
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
-
+    full = kwargs.pop('full', False)
+    
     rate_limiter.acquire('bybit.v5.trade.place_order')  
     bybit.sign_headers(headers, api, recv_window, payload)
-    response = http.post(url, data=payload, headers=headers, timeout=timeout)
+    response = http.post(url, data=payload, headers=headers, timeout=timeout, **kwargs)
     body = response.json()
     if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
     code = body.get('retCode')
     if code != 0: 
         raise ApiError(f"Bybit returned code {code}: {body.get('retMsg')}", response=response, body=body)
-    if kwargs.get('full'): return response, body
+    if full: return response, body
     return body
 
