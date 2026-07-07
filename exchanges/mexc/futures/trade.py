@@ -35,13 +35,14 @@ def place_order(api, data, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.get('session', requests)
-    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
-    timeout = kwargs.get('timeout', mexc.TIMEOUT)
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
     method = 'POST'
     url = f"{base_url}/api/v1/private/order/create"
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
+    full = kwargs.pop('full', False)
 
     rate_limiter.acquire('mexc.futures.trade.place_order')
     mexc.sign_headers(headers, api, method, body=payload)
@@ -55,6 +56,5 @@ def place_order(api, data, **kwargs):
         raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}",
                      response=response, body=body)
 
-    if kwargs.get('full'):
-        return response, body
+    if full: return response, body
     return body
