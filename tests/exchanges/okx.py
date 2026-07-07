@@ -8,13 +8,12 @@ os.chdir(APP_DIR)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s [%(name)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 import integrations.tests.shared.config as config
-from integrations.tests.shared.tools import load_secrets_file, get_api
+from integrations.tests.shared.tools import get_api
 import integrations.exchanges.okx.api.public_data.rest as public_data
 import integrations.exchanges.okx.api.trading_account.rest as trading_account
 import integrations.exchanges.okx.api.order_book_trading.market_data as market_data
 
-secrets = load_secrets_file(config.SECRETS_PATH)
-api = get_api(secrets, config.OKX_API_PATH)
+api = get_api(config.CREDS, config.OKX_API)
 
 # data = public_data.get_instruments('SWAP', {'instId': 'OP-USDT-SWAP'})
 # data = public_data.get_funding_rate('OP-USDT-SWAP')

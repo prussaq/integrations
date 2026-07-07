@@ -8,11 +8,10 @@ os.chdir(APP_DIR)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s [%(name)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 import integrations.tests.shared.config as config
-from integrations.tests.shared.tools import load_secrets_file, get_api
+from integrations.tests.shared.tools import get_api
 from integrations.exchanges.dydx.indexer.http import markets 
 
-secrets = load_secrets_file(config.SECRETS_PATH)
-# api = get_api(secrets, config.DYDX_API_PATH)
+# api = get_api(config.CREDS, config.DYDX_API)
 
 # data = markets.get_perpetual_markets({'limit':1})
 # data = markets.get_candles('BTC-USD', '1DAY', {'limit':1})

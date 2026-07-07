@@ -8,11 +8,10 @@ os.chdir(APP_DIR)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s [%(name)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 import integrations.tests.shared.config as config
-from integrations.tests.shared.tools import load_secrets_file, get_api
+from integrations.tests.shared.tools import get_api
 from integrations.exchanges.bybit.v5 import market, position, account, trade
 
-secrets = load_secrets_file(config.SECRETS_PATH)
-api = get_api(secrets, config.BYBIT_API_PATH)
+api = get_api(config.CREDS, config.BYBIT_API)
 
 # data = market.get_kline('OPUSDT', 'D', {'limit': 10})
 # data = market.get_instruments_info('linear', {'symbol': 'ORBSUSDT'})
