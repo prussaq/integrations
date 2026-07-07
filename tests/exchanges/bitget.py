@@ -1,6 +1,5 @@
 import logging
 import os, sys
-import json
 
 APP_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 sys.path.insert(0, APP_DIR)
@@ -8,11 +7,10 @@ os.chdir(APP_DIR)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s [%(name)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 import integrations.tests.shared.config as config
-from integrations.tests.shared.tools import load_secrets_file, get_api
+from integrations.tests.shared.tools import get_api
 from integrations.exchanges.bitget.futures import market, account, position
 
-secrets = load_secrets_file(config.SECRETS_PATH)
-api = get_api(secrets, config.BITGET_API_PATH)
+api = get_api(config.CREDS, config.BITGET_API)
 
 # data = market.get_ticker('OPUSDT', 'USDT-FUTURES')
 # data = market.get_candlestick_data('OPUSDT', 'USDT-FUTURES', '1Dutc')
