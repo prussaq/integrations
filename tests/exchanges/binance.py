@@ -8,12 +8,11 @@ os.chdir(APP_DIR)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s [%(name)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 import integrations.tests.shared.config as config
-from integrations.tests.shared.tools import load_secrets_file, get_api
+from integrations.tests.shared.tools import get_api
 import integrations.exchanges.binance.derivatives.usdsm_futures.market_data.rest as market_data
 import integrations.exchanges.binance.spot.rest.market as spot_market
 
-secrets = load_secrets_file(config.SECRETS_PATH)
-# api = get_api(secrets, config.BINANCE_API_PATH)
+# api = get_api(config.CREDS, config.BINANCE_API)
 
 # data = market_data.get_kline('OPUSDT', '1d', {'limit': 10})
 # data = market_data.get_funding_rate_history({'symbol': 'OPUSDT'})

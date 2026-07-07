@@ -2,7 +2,6 @@ import logging
 import json
 from pathlib import Path
 
-logger = logging.getLogger(__name__)
 
 def load_secrets_file(path):
     """
