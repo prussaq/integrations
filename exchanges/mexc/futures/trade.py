@@ -1,22 +1,21 @@
 import logging
 import json
 import requests
-from urllib.parse import urlencode
 
 from integrations.shared import rate_limiter
 from integrations.shared.exceptions import ApiError
 from integrations.shared.functions import execute_request
-import integrations.shared.exchange.bitget as bitget
+import integrations.shared.exchange.mexc as mexc
 
 logger = logging.getLogger(__name__)
 
 
 def place_order(api, data, **kwargs):
-    """ 
+    """
     Place an order.
 
     Link: 
-        https://www.bitget.com/api-doc/contract/trade/Place-Order
+        https://www.mexc.com/api-docs/futures/account-and-trading-endpoints/place-order
     Args:
         api (dict): API credentials. See `sign_headers` api parameter.
         data (dict): Request body parameters (JSON). See the documentation at `Link`.
@@ -36,26 +35,26 @@ def place_order(api, data, **kwargs):
         Makes HTTP request by `requests` or `requests.Session` if provided.
     """
     headers = kwargs.pop('headers', {})
-    http = kwargs.pop('session', requests)
-    base_url = kwargs.pop('base_url', bitget.MAIN_DOMAIN)
-    timeout = kwargs.pop('timeout', bitget.TIMEOUT)
+    http = kwargs.get('session', requests)
+    base_url = kwargs.get('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.get('timeout', mexc.TIMEOUT)
     method = 'POST'
-    path = '/api/v2/mix/position/single-position'
-    url = base_url + path
+    url = f"{base_url}/api/v1/private/order/create"
     payload = json.dumps(data, separators=(',', ':'))
     headers['Content-Type'] = 'application/json'
 
-    def send(settings): 
-        bitget.sign_headers(headers, api, method, path, payload)
-        return http.post(url, headers=headers, timeout=timeout, **settings)
-    def read(response): return response.json()
-    def check(response, body):
-        if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
-        code = body.get('code')
-        if code != '00000': 
-            raise ApiError(f"Bitget returned code {code}: {body.get('msg')}", response=response, body=body)
+    rate_limiter.acquire('mexc.futures.trade.place_order')
+    mexc.sign_headers(headers, api, method, body=payload)
+    response = http.post(url, data=payload, timeout=timeout, **kwargs)
+    body = response.json()
 
-    rate_limiter.acquire('bitget.futures.trade.place_order')
-    kwargs['retries'] = 1
-    return execute_request(send, read, check, kwargs)
+    if not isinstance(body, dict):
+        raise ApiError("unexpected response type", response=response, body=body)
 
+    if not body.get('success'):
+        raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}",
+                     response=response, body=body)
+
+    if kwargs.get('full'):
+        return response, body
+    return body

@@ -21,9 +21,6 @@ def place_order(api, data, **kwargs):
         kwargs: 
             session (requests.Session): Must be managed by caller.
             base_url (str): Base HTTP endpoint for the exchange API.
-            retries (int): Number of retry attempts.
-            delay (float): Initial retry delay in seconds.
-            backoff (float): Retry backoff multiplier.
             full (bool): If True, return both the parsed response body and the HTTP response object.
             Additional `requests` params like timeout, headers, etc.
     Returns:
@@ -56,5 +53,6 @@ def place_order(api, data, **kwargs):
             raise ApiError(f"HTX returned {status}: {body.get('err_code')}: {body.get('err_msg')}", 
                 response=response, body=body)
 
-    rate_limiter.acquire('htx.new.usdtm_futures.trade.place_order') 
+    rate_limiter.acquire('htx.new.usdtm_futures.trade.place_order')
+    kwargs['retries'] = 1
     return execute_request(send, read, check, kwargs)
