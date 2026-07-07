@@ -10,14 +10,6 @@ All imports are rooted at `integrations`, so the directory must be placed approp
 
 ---
 
-### ⚠️ Caution on MEXC Web Module
-
-Although the MEXC web module is included, **its use is strongly not recommended**.  
-MEXC has recently introduced a new security system that likely detects automated requests from such modules.  
-Using it may **lead to account restrictions or bans**. Proceed at your own risk.
-
----
-
 ## Overview
 
 - Python-based
