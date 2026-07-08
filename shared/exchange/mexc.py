@@ -4,7 +4,9 @@ import hashlib
 
 TIMEOUT = (5, 10)
 
-FUTURES_BASE_URL = 'https://contract.mexc.com'
+FUTURES_BASE_URL = 'https://api.mexc.com'
+OLD_FUTURES_BASE_URL = 'https://contract.mexc.com'
+
 
 def sign_headers(headers, api, method, *, query='', body=''):
     """
