@@ -10,17 +10,29 @@ os.chdir(APP_DIR)
 
 import integrations.tests.shared.config as config
 from integrations.tests.shared.tools import get_api
-from integrations.exchanges.mexc.futures import market, account_trading
+from integrations.exchanges.mexc.futures import market, account_trading, trade
 
 api = get_api(config.CREDS, config.MEXC_API)
 
-# data = market.get_contract_info({'symbol': 'PRCL_USDT'})
+# data = market.get_contract_info({'symbol': 'OP_USDT'})
 # data = market.get_contract_info()
-data = account_trading.get_currency_asset(api, 'USDT')
+# data = account_trading.get_currency_asset(api, 'USDT')
 # data = account_trading.get_account_assets(api)
 # data = account_trading.get_open_positions(api)
 # data = account_trading.get_funding_fee_details(api)
 # data = market.get_funding_rate_history('BTC_USDT')
 
-
 print('data:', data)
+
+order_data = {
+    'symbol': 'OP_USDT',
+    'vol': 1,           # Order volume
+    'leverage': 1,     # Required for opening a position
+    'side': 4,          # 1: open long
+    'type': 5,          # 5: market order
+    'openType': 1       # 1: isolated margin
+}
+# response, data = trade.place_order(api, order_data, full=True, base_url='https://api.mexc.com')
+
+# print('data:', data)
+# print('response:', response)
