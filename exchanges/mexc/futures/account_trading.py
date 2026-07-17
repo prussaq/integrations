@@ -105,6 +105,65 @@ def get_currency_asset(api, currency, **kwargs):
     return execute_request(send, read, check, kwargs)
 
 
+def get_historical_positions(api, params=None, **kwargs):
+    """Get historical position records.
+
+    Link: https://www.mexc.com/api-docs/futures/account-and-trading-endpoints/get-historical-positions
+    HTTP Request:
+        GET /api/v1/private/position/list/history_positions
+
+    Required Permission: View Order Details
+    Rate limit: 20 times/2 seconds
+
+    Args:
+        api (dict): API credentials. See `sign_headers` api parameter.
+        params (dict): Query parameters.
+            symbol (str): Contract symbol.
+            type (int): Position type, 1 long 2 short.
+            start_time (int): Start time, Unix millisecond timestamp.
+            end_time (int): End time, Unix millisecond timestamp.
+            position_type (int): Position type, 1 long 2 short.
+            page_num (int): Current page, default 1.
+            page_size (int): Page size, default 20, max 100.
+        kwargs:
+            session (requests.Session): Must be managed by caller.
+            base_url (str): Base HTTP endpoint for the exchange API.
+            retries (int): Number of retry attempts.
+            delay (float): Initial retry delay in seconds.
+            backoff (float): Retry backoff multiplier.
+            full (bool): If True, return both the parsed response body and the HTTP response object.
+            Additional `requests` params like timeout, headers, etc.
+    Returns:
+        dict: Parsed response body by default.
+        (requests.Response, dict): When `full=True`, the HTTP response and the parsed body.
+    Raises:
+        RequestFailed: If the request fails due to a transport- or protocol-level failure.
+        ApiError: If the response is semantically invalid or indicates an API-level error.
+        Exception: Propagates any other unexpected exceptions.
+    """
+    if params is None: params = {}
+    headers = kwargs.pop('headers', {})
+    http = kwargs.pop('session', requests)
+    base_url = kwargs.pop('base_url', mexc.FUTURES_BASE_URL)
+    timeout = kwargs.pop('timeout', mexc.TIMEOUT)
+    method = 'GET'
+    query = urlencode({k: v for k, v in sorted(params.items()) if v is not None})
+    url = f"{base_url}/api/v1/private/position/list/history_positions" + (f"?{query}" if query else '')
+
+    def send(settings):
+        mexc.sign_headers(headers, api, method, query=query)
+        return http.get(url, headers=headers, timeout=timeout, **settings)
+    def read(response): return response.json()
+    def check(response, body):
+        if not isinstance(body, dict): raise ApiError("unexpected response type", response=response, body=body)
+        if not body.get('success'):
+            raise ApiError(f"MEXC returned code {body.get('code')}: {body.get('message')}", 
+                response=response, body=body)
+
+    rate_limiter.acquire('mexc.futures.account_trading.get_historical_positions') 
+    return execute_request(send, read, check, kwargs)
+
+
 def get_open_positions(api, params=None, **kwargs):
     """ 
     Get info about open positions.
