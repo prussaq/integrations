@@ -21,6 +21,7 @@ api = get_api(config.CREDS, config.MEXC_API)
 # data = account_trading.get_open_positions(api)
 # data = account_trading.get_funding_fee_details(api)
 # data = market.get_funding_rate_history('BTC_USDT')
+data = account_trading.get_historical_positions(api)
 
 print('data:', data)
 
