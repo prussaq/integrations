@@ -21,7 +21,15 @@ api = get_api(config.CREDS, config.BYBIT_API)
 # data = position.set_leverage(api, 'linear', 'OPUSDT', buy='1', sell='1')
 # data = position.get_closed_PnL(api, 'linear', {'symbol': 'YZYUSDT', 'limit':100})
 # data = account.get_transferable_amount_unified(api, 'USDT')
-# data = account.get_transaction_log(api)
-data = account.get_account_info(api)
+# data = account.get_transaction_log(api, {'symbol': '1000BONKPERP'})
+# data = account.get_account_info(api)
 
-print('data:', data)
+# base = leg['instrument']['symbol'].replace('USDT', '')
+params = {
+    "accountType": 'UNIFIED', 
+    "category": 'linear', "type": 'SETTLEMENT', 
+    "baseCoin": '1000BONK', "currency": '' }
+body = account.get_transaction_log(api, params)
+print('body:', body)
+
+# print('data:', data)
